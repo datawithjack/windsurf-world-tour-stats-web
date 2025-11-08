@@ -1,0 +1,481 @@
+# WWWTS Design System
+
+Complete style guide and component library for the Windsurf World Tour Stats application.
+
+---
+
+## 🎨 Brand Colors
+
+### Primary Palette
+- **Background**: `#0A0E1A` - Deep navy/black
+- **Accent**: `#38bdf8` (cyan-400) - Bright cyan for highlights
+- **Accent Bright**: `#0ea5e9` (cyan-500) - Brighter cyan for active states
+
+### Ocean Color Scale
+```css
+ocean-50:  #f0f9ff
+ocean-100: #e0f2fe
+ocean-200: #bae6fd
+ocean-300: #7dd3fc
+ocean-400: #38bdf8 ← Primary Accent
+ocean-500: #0ea5e9
+ocean-600: #0284c7
+ocean-700: #0369a1
+ocean-800: #075985
+ocean-900: #0c4a6e
+ocean-950: #082f49
+```
+
+### Neutral Colors
+- **White**: `#ffffff` - Primary text
+- **Gray 300**: `#d1d5db` - Secondary text
+- **Gray 400**: `#9ca3af` - Tertiary text
+- **Slate 700**: `#334155` - Borders
+- **Slate 800**: `#1e293b` - Card backgrounds (with opacity)
+- **Slate 900**: `#0f172a` - Dark accents
+
+---
+
+## ✍️ Typography
+
+### Font Families
+```css
+--font-bebas: 'Bebas Neue', sans-serif;  /* Headers */
+--font-inter: 'Inter', sans-serif;       /* Body text */
+```
+
+### Display Sizes (Bebas Neue)
+Use for hero sections and major page titles:
+- **display-xl**: 96px (6rem) - Main hero titles
+- **display-lg**: 72px (4.5rem) - Large page headers
+- **display-md**: 60px (3.75rem) - Section headers
+
+**Usage:**
+```jsx
+<h1 className="display-xl">WINDSURF WORLD TOUR STATS</h1>
+```
+
+### Heading Sizes (Bebas Neue)
+Use for section titles and card headers:
+- **heading-xl**: 48px (3rem)
+- **heading-lg**: 36px (2.25rem)
+- **heading-md**: 30px (1.875rem)
+- **heading-sm**: 24px (1.5rem)
+
+### Body Text Sizes (Inter)
+Use for descriptions, paragraphs, and content:
+- **body-xl**: 20px (1.25rem)
+- **body-lg**: 18px (1.125rem)
+- **body-md**: 16px (1rem) ← Default
+- **body-sm**: 14px (0.875rem)
+- **body-xs**: 12px (0.75rem)
+
+### Labels & Captions (Inter)
+Use for metadata, tags, and UI labels:
+- **label-lg**: 14px, uppercase, bold
+- **label-md**: 12px, uppercase, bold
+- **label-sm**: 10px, uppercase, bold
+
+---
+
+## 🔘 Buttons
+
+### Button Variants
+
+#### Primary Button
+Use for main call-to-action elements.
+
+```jsx
+<Link
+  to="/events"
+  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-cyan-500 text-white font-semibold rounded-md hover:bg-cyan-600 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/30"
+>
+  Browse Events
+  <ArrowRight size={18} />
+</Link>
+```
+
+**Styling:**
+- Background: `bg-cyan-500`
+- Text: `text-white font-semibold`
+- Padding: `px-6 py-3`
+- Rounded: `rounded-md`
+- Hover: `hover:bg-cyan-600 hover:shadow-lg hover:shadow-cyan-500/30`
+- Transition: `transition-all duration-300`
+
+#### Secondary Button (Outline)
+Use for secondary actions or paired with primary button.
+
+```jsx
+<button
+  className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-cyan-500 text-cyan-400 font-semibold rounded-md hover:bg-cyan-500/10 transition-all duration-300"
+>
+  View Details
+</button>
+```
+
+**Styling:**
+- Border: `border-2 border-cyan-500`
+- Text: `text-cyan-400 font-semibold`
+- Padding: `px-6 py-3`
+- Rounded: `rounded-md`
+- Hover: `hover:bg-cyan-500/10`
+- Transition: `transition-all duration-300`
+
+#### Disabled Button
+Use for unavailable actions or "coming soon" features.
+
+```jsx
+<button
+  disabled
+  className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-cyan-500/50 text-cyan-400/70 font-semibold rounded-md cursor-not-allowed"
+>
+  Coming Soon
+</button>
+```
+
+**Styling:**
+- Border: `border-2 border-cyan-500/50` (50% opacity)
+- Text: `text-cyan-400/70` (70% opacity)
+- Cursor: `cursor-not-allowed`
+- No hover effects
+
+### Button Sizes
+
+**Standard (Default):**
+- Padding: `px-6 py-3`
+- Text: `font-semibold`
+- Icon: `size={18}`
+
+**Compact:**
+- Padding: `px-4 py-2`
+- Text: `text-sm font-semibold`
+- Icon: `size={16}`
+
+**Large:**
+- Padding: `px-8 py-4`
+- Text: `text-lg font-bold`
+- Icon: `size={20}`
+
+### Button Groups
+
+Use for multiple related actions.
+
+```jsx
+<div className="flex flex-col sm:flex-row gap-4">
+  <Link to="/events" className="[primary button classes]">
+    Browse Events
+    <ArrowRight size={18} />
+  </Link>
+  <button disabled className="[disabled button classes]">
+    Coming Soon: Athletes
+  </button>
+</div>
+```
+
+**Layout:**
+- Container: `flex flex-col sm:flex-row gap-4`
+- Mobile: Stacks vertically
+- Desktop: Side-by-side with gap
+
+### Icon Usage
+
+- Place icons **after** text for forward actions (Browse, Next, Submit)
+- Place icons **before** text for backward actions (Back, Return)
+- Icon size: `18px` for standard buttons
+
+```jsx
+// Forward action
+<Button>Continue <ArrowRight size={18} /></Button>
+
+// Backward action
+<Button><ArrowLeft size={18} /> Back</Button>
+```
+
+### Best Practices
+
+#### DO ✅
+- Use primary button for main action
+- Use secondary button for alternative actions
+- Show disabled state for unavailable features
+- Include hover effects for interactive buttons
+- Use icons to reinforce button meaning
+- Make buttons fully responsive (stack on mobile)
+
+#### DON'T ❌
+- Use more than one primary button in a group
+- Skip transition effects
+- Use solid backgrounds for secondary buttons
+- Make disabled buttons look clickable
+- Use buttons for navigation without proper Link wrapper
+- Forget to add gap between button groups
+
+---
+
+## 🧩 Components
+
+### PageLayout
+Main layout wrapper for all pages.
+
+```jsx
+import PageLayout from '@/components/PageLayout';
+
+<PageLayout hero={<PageHero title="Athletes" />}>
+  {/* Page content */}
+</PageLayout>
+```
+
+### PageHero
+Hero section with consistent styling.
+
+```jsx
+import PageHero from '@/components/PageHero';
+
+// Left-aligned (default)
+<PageHero
+  title="WINDSURF WORLD TOUR STATS"
+  description="Track every heat, jump, and wave..."
+/>
+
+// Centered with icon
+<PageHero
+  title="EVENTS"
+  subtitle="Competition Calendar"
+  description="Browse all windsurf events"
+  icon={<Trophy size={40} />}
+  centered
+/>
+```
+
+**Props:**
+- `title` (required): Main heading
+- `subtitle` (optional): Small text above title
+- `description` (optional): Tagline below title
+- `icon` (optional): Icon component
+- `centered` (optional): Center alignment (default: left)
+
+### Section
+Content section with consistent spacing.
+
+```jsx
+import Section from '@/components/Section';
+
+<Section containerSize="lg">
+  {/* Section content */}
+</Section>
+```
+
+**Container Sizes:**
+- `sm`: 640px max width
+- `md`: 768px max width
+- `lg`: 1024px max width
+- `xl`: 1280px max width (default)
+- `full`: 100% width
+
+### Card
+Frosted glass card with hover effects.
+
+```jsx
+import Card from '@/components/Card';
+
+<Card hoverable clickable onClick={handleClick}>
+  <h3>Card Title</h3>
+  <p>Card content...</p>
+</Card>
+```
+
+**Props:**
+- `hoverable` (default: true): Enable hover effects
+- `clickable` (default: false): Show pointer cursor
+- `onClick` (optional): Click handler
+- `className` (optional): Additional classes
+
+### FeatureCard
+Specialized card for dashboard features.
+
+```jsx
+import FeatureCard from '@/components/FeatureCard';
+
+<FeatureCard title="QUICK STATS" isLoading={loading}>
+  {/* Card content */}
+</FeatureCard>
+```
+
+---
+
+## 🎭 Effects & Styling Patterns
+
+### Frosted Glass Cards
+```css
+bg-slate-800/40
+backdrop-blur-sm
+border border-slate-700/50
+```
+
+### Hover Effects (Cyan Accent)
+```css
+hover:bg-slate-800/60
+hover:border-cyan-500/50
+hover:shadow-lg
+hover:shadow-cyan-500/10
+```
+
+### Background Overlay
+```css
+background:
+  linear-gradient(to bottom, rgba(10, 14, 26, 0.85), rgba(10, 14, 26, 0.95)),
+  url('/images/background-1.jpg');
+```
+
+### Smooth Transitions
+```css
+transition-all duration-300
+```
+
+---
+
+## 📐 Spacing System
+
+### Standard Padding/Margin
+```
+py-12 md:py-16  /* Section vertical spacing */
+px-4 sm:px-6 lg:px-8  /* Horizontal padding (responsive) */
+gap-6  /* Grid gap for cards */
+mb-6  /* Margin bottom between elements */
+```
+
+### Container Max Widths
+```
+max-w-7xl  /* Main container (1280px) */
+max-w-4xl  /* Content container (896px) */
+```
+
+---
+
+## 📱 Responsive Breakpoints
+
+```
+sm:  640px   /* Small tablets */
+md:  768px   /* Tablets */
+lg:  1024px  /* Small laptops */
+xl:  1280px  /* Desktops */
+2xl: 1536px  /* Large screens */
+```
+
+**Mobile-First Approach:**
+```jsx
+<h1 className="text-6xl md:text-8xl">Title</h1>
+// Mobile: 6xl (60px), Desktop: 8xl (96px)
+```
+
+---
+
+## 🎯 Usage Examples
+
+### Standard Page Template
+
+```jsx
+import PageLayout from '@/components/PageLayout';
+import PageHero from '@/components/PageHero';
+import Section from '@/components/Section';
+import Card from '@/components/Card';
+import { Trophy } from 'lucide-react';
+
+export default function EventsPage() {
+  return (
+    <PageLayout
+      hero={
+        <PageHero
+          title="EVENTS"
+          description="Browse all windsurf competition events"
+          icon={<Trophy size={40} />}
+        />
+      }
+    >
+      <Section>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>Event 1</Card>
+          <Card>Event 2</Card>
+          <Card>Event 3</Card>
+        </div>
+      </Section>
+    </PageLayout>
+  );
+}
+```
+
+### Typography Usage
+
+```jsx
+{/* Hero title */}
+<h1 className="display-xl">MAIN TITLE</h1>
+
+{/* Section heading */}
+<h2 className="heading-lg mb-4">Section Title</h2>
+
+{/* Body text */}
+<p className="body-md text-gray-300">Description text...</p>
+
+{/* Label/metadata */}
+<span className="label-md text-cyan-400">NEW</span>
+```
+
+---
+
+## 🚀 Best Practices
+
+### DO ✅
+- Use `PageHero` for all page headers
+- Left-align hero sections (matches brand aesthetic)
+- Use Bebas Neue for ALL headings
+- Use Inter for ALL body text
+- Apply frosted glass effect to cards
+- Use cyan (`#38bdf8`) for accents and highlights
+- Maintain consistent spacing with `Section` component
+- Add smooth transitions to interactive elements
+
+### DON'T ❌
+- Mix font families within the same component
+- Center-align unless explicitly designed for it
+- Use colors outside the defined palette
+- Skip hover effects on interactive cards
+- Forget responsive text sizing (`md:text-*`)
+- Override the background on individual pages
+- Use solid backgrounds (always use transparency)
+
+---
+
+## 🔧 Component Checklist
+
+When creating new pages/components:
+
+- [ ] Use `PageLayout` wrapper
+- [ ] Add `PageHero` for page title
+- [ ] Use `Section` for content areas
+- [ ] Apply appropriate typography classes
+- [ ] Add hover effects to interactive elements
+- [ ] Test on mobile (responsive sizing)
+- [ ] Use `Card` component for content blocks
+- [ ] Ensure text is readable over background
+- [ ] Add loading states where appropriate
+- [ ] Apply smooth transitions
+
+---
+
+## 📦 Component Exports
+
+```typescript
+// Layout
+export { default as PageLayout } from '@/components/PageLayout';
+export { default as PageHero } from '@/components/PageHero';
+export { default as Section } from '@/components/Section';
+
+// UI Components
+export { default as Card } from '@/components/Card';
+export { default as FeatureCard } from '@/components/FeatureCard';
+export { default as Navigation } from '@/components/Navigation';
+```
+
+---
+
+**Questions?** See the component source files for detailed implementation examples.
