@@ -42,21 +42,21 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Quick Stats Card */}
-            <FeatureCard title="QUICK STATS" isLoading={false}>
+            <FeatureCard title="Quick Stats" isLoading={false}>
               <div className="text-gray-400 text-center py-8">
                 Coming Soon
               </div>
             </FeatureCard>
 
             {/* Featured Rider Card */}
-            <FeatureCard title="FEATURED RIDER" isLoading={false}>
+            <FeatureCard title="Featured Rider" isLoading={false}>
               <div className="text-gray-400 text-center py-8">
                 Coming Soon
               </div>
             </FeatureCard>
 
             {/* Just Added Card */}
-            <FeatureCard title="JUST ADDED" isLoading={false}>
+            <FeatureCard title="Just Added" isLoading={false}>
               <div className="text-gray-400 text-center py-8">
                 Coming Soon
               </div>

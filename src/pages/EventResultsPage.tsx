@@ -1,14 +1,16 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import FeatureCard from '../components/FeatureCard';
+import ResultsTable from '../components/ResultsTable';
 
 const EventResultsPage = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<'results' | 'event-stats' | 'athlete-stats'>('results');
-  const [genderFilter, setGenderFilter] = useState<'all' | 'men' | 'women'>('all');
+  const [genderFilter, setGenderFilter] = useState<'all' | 'men' | 'women'>('women');
+  const [defaultSet, setDefaultSet] = useState(false);
 
   const { data: event, isLoading, error } = useQuery({
     queryKey: ['event', id],
@@ -16,6 +18,30 @@ const EventResultsPage = () => {
     enabled: !!id,
     retry: 1,
   });
+
+  // Fetch athlete results with gender filter
+  const { data: resultsData, isLoading: resultsLoading } = useQuery({
+    queryKey: ['athleteResults', event?.event_id, genderFilter],
+    queryFn: () => apiService.getAthleteResults({
+      event_id: event?.event_id,
+      sex: genderFilter === 'all' ? undefined : genderFilter === 'men' ? 'Men' : 'Women',
+      page_size: 100,
+    }),
+    enabled: !!event?.event_id,
+    retry: 1,
+  });
+
+  // Set default gender filter based on available results (only on first load)
+  useEffect(() => {
+    if (!defaultSet && resultsData?.results !== undefined && event?.event_id) {
+      // If no results for women, check if men's results exist
+      if (resultsData.results.length === 0 && genderFilter === 'women') {
+        // Try to fetch men's results to see if we should switch default
+        setGenderFilter('men');
+      }
+      setDefaultSet(true);
+    }
+  }, [resultsData, event?.event_id, defaultSet, genderFilter]);
 
   return (
     <div className="min-h-screen pt-16">
@@ -46,38 +72,23 @@ const EventResultsPage = () => {
               <p className="text-gray-300">Unable to fetch event details. Please try again.</p>
             </div>
           ) : event ? (
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-              <div className="flex-1">
-                <h1 className="text-4xl md:text-6xl font-bold mb-2 tracking-tight leading-none uppercase">
-                  {event.event_name}
-                </h1>
-                <div className="flex items-center gap-3 text-sm md:text-base text-gray-400">
-                  <span>{event.country_flag}</span>
-                  <span>•</span>
-                  <span>{event.event_date}</span>
-                  {event.stars && (
-                    <>
-                      <span>•</span>
-                      <div className="flex items-center gap-1">
-                        <Star className="text-yellow-400 fill-yellow-400" size={16} />
-                        <span className="text-yellow-400 font-semibold">{event.stars}</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Gender Filter */}
-              <div className="flex-shrink-0">
-                <select
-                  value={genderFilter}
-                  onChange={(e) => setGenderFilter(e.target.value as 'all' | 'men' | 'women')}
-                  className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all"
-                >
-                  <option value="all">All Genders</option>
-                  <option value="men">Men</option>
-                  <option value="women">Women</option>
-                </select>
+            <div>
+              <h1 className="text-4xl md:text-6xl font-bold mb-2 tracking-tight leading-none uppercase">
+                {event.event_name}
+              </h1>
+              <div className="flex items-center gap-3 text-sm md:text-base text-gray-400">
+                <span>{event.country_flag}</span>
+                <span>•</span>
+                <span>{event.event_date}</span>
+                {event.stars && (
+                  <>
+                    <span>•</span>
+                    <div className="flex items-center gap-1">
+                      <Star className="text-yellow-400 fill-yellow-400" size={16} />
+                      <span className="text-yellow-400 font-semibold">{event.stars}</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ) : null}
@@ -122,21 +133,38 @@ const EventResultsPage = () => {
         </div>
       </section>
 
+      {/* Filters Section */}
+      <section className="px-4 sm:px-6 lg:px-8 py-4 pb-2">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4">
+            <label className="text-sm font-medium text-gray-400">Filter by:</label>
+            <select
+              value={genderFilter}
+              onChange={(e) => setGenderFilter(e.target.value as 'all' | 'men' | 'women')}
+              className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+            >
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
       {/* Tab Content */}
-      <section className="px-4 sm:px-6 lg:px-8 py-8 pb-20">
+      <section className="px-4 sm:px-6 lg:px-8 py-6 pb-20">
         <div className="max-w-7xl mx-auto">
           {activeTab === 'results' ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Final Rankings Card */}
-              <FeatureCard title="FINAL RANKINGS" isLoading={false}>
-                <div className="text-gray-400 text-center py-12">
-                  <p className="text-lg mb-2">Tabular Data</p>
-                  <p className="text-sm text-gray-500">Final rankings will be displayed here</p>
-                </div>
+              <FeatureCard title="Final Rankings" isLoading={resultsLoading}>
+                <ResultsTable
+                  results={resultsData?.results || []}
+                  isLoading={resultsLoading}
+                />
               </FeatureCard>
 
               {/* Elimination Ladder Card */}
-              <FeatureCard title="ELIMINATION LADDER" isLoading={false}>
+              <FeatureCard title="Elimination Ladder" isLoading={false}>
                 <div className="text-gray-400 text-center py-12">
                   <p className="text-lg mb-2">TBC</p>
                   <p className="text-sm text-gray-500">Elimination bracket will be displayed here</p>

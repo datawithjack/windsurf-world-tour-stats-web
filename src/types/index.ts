@@ -72,3 +72,30 @@ export interface HeadToHead {
   wins2: number;
   lastMeeting?: string;
 }
+
+export interface AthleteResult {
+  id: number;
+  athlete_id: number;
+  athlete_name: string;
+  nationality: string;
+  profile_picture_url: string;
+  event_id: number;
+  event_name: string;
+  event_year: number;
+  country_code: string;
+  division: string;
+  placement: number;
+  source: string;
+}
+
+export interface AthleteResultsResponse {
+  results: AthleteResult[];
+  pagination: {
+    total: number;
+    page: number;
+    page_size: number;
+    total_pages: number;
+    has_next: boolean;
+    has_prev: boolean;
+  };
+}

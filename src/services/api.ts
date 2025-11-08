@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Rider, Event, Heat, QuickStats, HeadToHead, EventsResponse } from '../types';
+import type { Rider, Event, Heat, QuickStats, HeadToHead, EventsResponse, AthleteResultsResponse } from '../types';
 
 // Production API URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://windsurf-world-tour-stats-api.duckdns.org/api/v1';
@@ -67,6 +67,17 @@ export const apiService = {
   // Head to Head
   async getHeadToHead(rider1Id: number, rider2Id: number): Promise<HeadToHead> {
     const response = await api.get(`/head-to-head/${rider1Id}/${rider2Id}`);
+    return response.data;
+  },
+
+  // Athlete Results
+  async getAthleteResults(params: {
+    event_id?: number;
+    sex?: string;
+    page?: number;
+    page_size?: number;
+  }): Promise<AthleteResultsResponse> {
+    const response = await api.get('/athletes/results', { params });
     return response.data;
   },
 };
