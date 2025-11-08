@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navigation from './components/Navigation';
 import LandingPage from './pages/LandingPage';
 import EventsPage from './pages/EventsPage';
+import EventResultsPage from './pages/EventResultsPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -23,6 +24,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/events" element={<EventsPage />} />
+            <Route path="/events/:id" element={<EventResultsPage />} />
             {/* Placeholder routes for future pages */}
             <Route path="/athletes" element={<ComingSoon page="Athletes" />} />
             <Route path="/head-to-heads" element={<ComingSoon page="Head to Heads" />} />

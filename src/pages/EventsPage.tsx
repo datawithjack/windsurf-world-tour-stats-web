@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import { Calendar, MapPin, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const EventsPage = () => {
   const { data: eventsData, isLoading, error } = useQuery({
@@ -73,13 +74,13 @@ const EventsPage = () => {
           ) : events && events.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {events.map((event, index) => (
-                <motion.div
-                  key={event.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden hover:bg-slate-800/60 transition-all duration-300 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer"
-                >
+                <Link key={event.id} to={`/events/${event.id}`}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden hover:bg-slate-800/60 transition-all duration-300 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer"
+                  >
                   {event.event_image_url && (
                     <div className="relative">
                       <img
@@ -120,6 +121,7 @@ const EventsPage = () => {
                     </div>
                   </div>
                 </motion.div>
+                </Link>
               ))}
             </div>
           ) : (
