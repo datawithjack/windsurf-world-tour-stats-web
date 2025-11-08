@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import FeatureCard from '../components/FeatureCard';
 import { ArrowRight } from 'lucide-react';
+import StatCounter from '../components/StatCounter';
 
 const LandingPage = () => {
 
@@ -37,30 +37,39 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Feature Cards Section */}
+      {/* Statistics Section */}
       <section className="px-4 sm:px-6 lg:px-8 pb-20">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Quick Stats Card */}
-            <FeatureCard title="Quick Stats" isLoading={false}>
-              <div className="text-gray-400 text-center py-8">
-                Coming Soon
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+            {/* Events Stat */}
+            <div className="text-center">
+              <div className="mb-2">
+                <StatCounter end={35} duration={1500} delay={0} />
               </div>
-            </FeatureCard>
+              <p className="text-sm text-gray-400" style={{ fontFamily: 'var(--font-inter)' }}>
+                Events (since 2016)
+              </p>
+            </div>
 
-            {/* Featured Rider Card */}
-            <FeatureCard title="Featured Rider" isLoading={false}>
-              <div className="text-gray-400 text-center py-8">
-                Coming Soon
+            {/* Athletes Stat */}
+            <div className="text-center">
+              <div className="mb-2">
+                <StatCounter end={250} duration={1500} delay={100} />
               </div>
-            </FeatureCard>
+              <p className="text-sm text-gray-400" style={{ fontFamily: 'var(--font-inter)' }}>
+                Athletes
+              </p>
+            </div>
 
-            {/* Just Added Card */}
-            <FeatureCard title="Just Added" isLoading={false}>
-              <div className="text-gray-400 text-center py-8">
-                Coming Soon
+            {/* Scores Stat */}
+            <div className="text-center">
+              <div className="mb-2">
+                <StatCounter end={25000} duration={1500} delay={200} suffix="+" />
               </div>
-            </FeatureCard>
+              <p className="text-sm text-gray-400" style={{ fontFamily: 'var(--font-inter)' }}>
+                Wave and Jump Scores
+              </p>
+            </div>
           </div>
         </div>
       </section>
