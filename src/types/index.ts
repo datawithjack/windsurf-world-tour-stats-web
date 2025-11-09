@@ -99,3 +99,52 @@ export interface AthleteResultsResponse {
     has_prev: boolean;
   };
 }
+
+// Event Stats Types
+export interface BestScoreDetail {
+  score: number;
+  athlete_name: string;
+  athlete_id: number;
+  heat_number: number;
+  move_type?: string;
+}
+
+export interface MoveTypeStat {
+  move_type: string;
+  best_score: number;
+  average_score: number;
+  best_by: {
+    athlete_name: string;
+    athlete_id: number;
+    heat_number: number;
+    score: number;
+  };
+}
+
+export interface TopScore {
+  rank: number;
+  athlete_name: string;
+  athlete_id: number;
+  score: number;
+  heat_number: number;
+  move_type?: string;
+}
+
+export interface EventStatsResponse {
+  event_id: number;
+  event_name: string;
+  sex: 'Men' | 'Women';
+  summary_stats: {
+    best_heat_score: BestScoreDetail | null;
+    best_jump_score: BestScoreDetail | null;
+    best_wave_score: BestScoreDetail | null;
+  };
+  move_type_stats: MoveTypeStat[];
+  top_jump_scores: TopScore[];
+  top_wave_scores: TopScore[];
+  metadata: {
+    total_heats: number;
+    total_athletes: number;
+    generated_at: string;
+  };
+}
