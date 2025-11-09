@@ -34,6 +34,17 @@ const EventResultsPage = () => {
     retry: 1,
   });
 
+  // Fetch event stats with gender filter
+  const { data: statsData, isLoading: statsLoading } = useQuery({
+    queryKey: ['eventStats', id, genderFilter],
+    queryFn: () => apiService.getEventStats(
+      Number(id),
+      genderFilter === 'men' ? 'Men' : 'Women'
+    ),
+    enabled: !!id && genderFilter !== 'all',
+    retry: 1,
+  });
+
   // Set default gender filter based on available results (only on first load)
   useEffect(() => {
     if (!defaultSet && resultsData?.results !== undefined && event?.event_id) {
@@ -46,80 +57,49 @@ const EventResultsPage = () => {
     }
   }, [resultsData, event?.event_id, defaultSet, genderFilter]);
 
-  // Dummy data for Event Stats (from screenshot)
-  const dummyStatsData = {
+  // Transform API response to component props format
+  const transformedStatsData = statsData ? {
     summaryCards: {
-      bestHeatScore: {
-        score: 24.50,
-        athlete: 'Degrieck',
-        heat: 'Heat 21a',
-      },
-      bestJumpScore: {
-        score: 7.10,
-        athlete: 'Ruano Moreno',
-        heat: 'Heat 19a',
-        move: 'Forward Loop',
-      },
-      bestWaveScore: {
-        score: 7.50,
-        athlete: 'Degrieck',
-        heat: 'Heat 21a',
-      },
+      bestHeatScore: statsData.summary_stats?.best_heat_score ? {
+        score: statsData.summary_stats.best_heat_score.score,
+        athlete: statsData.summary_stats.best_heat_score.athlete_name,
+        heat: `Heat ${statsData.summary_stats.best_heat_score.heat_number}`,
+      } : null,
+      bestJumpScore: statsData.summary_stats?.best_jump_score ? {
+        score: statsData.summary_stats.best_jump_score.score,
+        athlete: statsData.summary_stats.best_jump_score.athlete_name,
+        heat: `Heat ${statsData.summary_stats.best_jump_score.heat_number}`,
+        move: statsData.summary_stats.best_jump_score.move_type || 'Unknown',
+      } : null,
+      bestWaveScore: statsData.summary_stats?.best_wave_score ? {
+        score: statsData.summary_stats.best_wave_score.score,
+        athlete: statsData.summary_stats.best_wave_score.athlete_name,
+        heat: `Heat ${statsData.summary_stats.best_wave_score.heat_number}`,
+      } : null,
     },
-    chartData: [
-      {
-        type: 'Wave',
-        best: 7.50,
-        average: 2.95,
-        bestBy: { athlete: 'Degrieck', heat: '21a', score: 7.50 },
-      },
-      {
-        type: 'Forward Loop',
-        best: 7.10,
-        average: 2.82,
-        bestBy: { athlete: 'Ruano Moreno', heat: '19a', score: 7.10 },
-      },
-      {
-        type: 'Backloop',
-        best: 6.95,
-        average: 4.82,
-        bestBy: { athlete: 'Offringa', heat: '49a', score: 6.95 },
-      },
-      {
-        type: 'Pushloop',
-        best: 6.88,
-        average: 4.29,
-        bestBy: { athlete: 'Ruano Moreno', heat: '23a', score: 6.88 },
-      },
-      {
-        type: 'Tabletop',
-        best: 2.12,
-        average: 1.08,
-        bestBy: { athlete: 'Snady', heat: '45a', score: 2.12 },
-      },
-    ],
-    topHeatScores: [
-      { rider: 'Degrieck', score: 24.5, heatNo: '21a' },
-      { rider: 'Offringa', score: 23.95, heatNo: '49a' },
-      { rider: 'Offringa', score: 23.63, heatNo: '20a' },
-      { rider: 'Ruano Moreno', score: 23.58, heatNo: '23a' },
-      { rider: 'Offringa', score: 21.69, heatNo: '48a' },
-    ],
-    topJumpScores: [
-      { rider: 'Ruano Moreno', score: 7.10, move: 'Forward Loop', heatNo: '19a' },
-      { rider: 'Offringa', score: 6.95, move: 'Backloop', heatNo: '49a' },
-      { rider: 'Offringa', score: 6.88, move: 'Backloop', heatNo: '20a' },
-      { rider: 'Offringa', score: 6.88, move: 'Backloop', heatNo: '23a' },
-      { rider: 'Ruano Moreno', score: 6.75, move: 'Backloop', heatNo: '19a' },
-    ],
-    topWaveScores: [
-      { rider: 'Degrieck', score: 7.50, heatNo: '21a' },
-      { rider: 'Ruano Moreno', score: 6.75, heatNo: '23a' },
-      { rider: 'Offringa', score: 6.12, heatNo: '20a' },
-      { rider: 'Offringa', score: 6.12, heatNo: '49a' },
-      { rider: 'Ruano Moreno', score: 6.00, heatNo: '22a' },
-    ],
-  };
+    chartData: statsData.move_type_stats?.map(stat => ({
+      type: stat.move_type,
+      best: stat.best_score,
+      average: stat.average_score,
+      bestBy: stat.best_by ? {
+        athlete: stat.best_by.athlete_name,
+        heat: stat.best_by.heat_number.toString(),
+        score: stat.best_by.score,
+      } : { athlete: '', heat: '', score: 0 },
+    })) || [],
+    topHeatScores: [], // Not available in API yet
+    topJumpScores: statsData.top_jump_scores?.slice(0, 10).map(score => ({
+      rider: score.athlete_name,
+      score: score.score,
+      move: score.move_type || 'Unknown',
+      heatNo: score.heat_number.toString(),
+    })) || [],
+    topWaveScores: statsData.top_wave_scores?.slice(0, 10).map(score => ({
+      rider: score.athlete_name,
+      score: score.score,
+      heatNo: score.heat_number.toString(),
+    })) || [],
+  } : null;
 
   return (
     <div className="min-h-screen pt-16">
@@ -251,25 +231,55 @@ const EventResultsPage = () => {
             </div>
           ) : activeTab === 'event-stats' ? (
             <div className="space-y-8">
-              {/* Summary Cards */}
-              <StatsSummaryCards
-                bestHeatScore={dummyStatsData.summaryCards.bestHeatScore}
-                bestJumpScore={dummyStatsData.summaryCards.bestJumpScore}
-                bestWaveScore={dummyStatsData.summaryCards.bestWaveScore}
-              />
+              {statsLoading ? (
+                <div className="text-center py-12">
+                  <div className="animate-pulse space-y-4">
+                    <div className="h-32 bg-slate-700 rounded w-full"></div>
+                    <div className="h-64 bg-slate-700 rounded w-full"></div>
+                  </div>
+                </div>
+              ) : transformedStatsData ? (
+                <>
+                  {/* Summary Cards - only render if at least one card has data */}
+                  {(transformedStatsData.summaryCards.bestHeatScore ||
+                    transformedStatsData.summaryCards.bestJumpScore ||
+                    transformedStatsData.summaryCards.bestWaveScore) && (
+                    <StatsSummaryCards
+                      bestHeatScore={transformedStatsData.summaryCards.bestHeatScore}
+                      bestJumpScore={transformedStatsData.summaryCards.bestJumpScore}
+                      bestWaveScore={transformedStatsData.summaryCards.bestWaveScore}
+                    />
+                  )}
 
-              {/* Bar Chart */}
-              <FeatureCard title="Best and Average Counting Score by Type" isLoading={false}>
-                <EventStatsChart data={dummyStatsData.chartData} />
-              </FeatureCard>
+                  {/* Bar Chart - only render if data exists */}
+                  {transformedStatsData.chartData.length > 0 && (
+                    <FeatureCard title="Best and Average Counting Score by Type" isLoading={false}>
+                      <EventStatsChart data={transformedStatsData.chartData} />
+                    </FeatureCard>
+                  )}
 
-              {/* Top Scores Tables */}
-              <TopScoresTable
-                topHeatScores={dummyStatsData.topHeatScores}
-                topJumpScores={dummyStatsData.topJumpScores}
-                topWaveScores={dummyStatsData.topWaveScores}
-                isLoading={false}
-              />
+                  {/* Top Scores Tables - only render if at least one table has data */}
+                  {(transformedStatsData.topHeatScores.length > 0 ||
+                    transformedStatsData.topJumpScores.length > 0 ||
+                    transformedStatsData.topWaveScores.length > 0) && (
+                    <TopScoresTable
+                      topHeatScores={transformedStatsData.topHeatScores}
+                      topJumpScores={transformedStatsData.topJumpScores}
+                      topWaveScores={transformedStatsData.topWaveScores}
+                      isLoading={false}
+                    />
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-12">
+                    <h3 className="text-xl font-semibold text-gray-400 mb-2">No Stats Available</h3>
+                    <p className="text-gray-500">
+                      Event statistics are not available for this event.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-20">
