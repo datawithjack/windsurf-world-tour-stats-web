@@ -5,6 +5,9 @@ import { useQuery } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import FeatureCard from '../components/FeatureCard';
 import ResultsTable from '../components/ResultsTable';
+import StatsSummaryCards from '../components/StatsSummaryCards';
+import EventStatsChart from '../components/EventStatsChart';
+import TopScoresTable from '../components/TopScoresTable';
 
 const EventResultsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -42,6 +45,81 @@ const EventResultsPage = () => {
       setDefaultSet(true);
     }
   }, [resultsData, event?.event_id, defaultSet, genderFilter]);
+
+  // Dummy data for Event Stats (from screenshot)
+  const dummyStatsData = {
+    summaryCards: {
+      bestHeatScore: {
+        score: 24.50,
+        athlete: 'Degrieck',
+        heat: 'Heat 21a',
+      },
+      bestJumpScore: {
+        score: 7.10,
+        athlete: 'Ruano Moreno',
+        heat: 'Heat 19a',
+        move: 'Forward Loop',
+      },
+      bestWaveScore: {
+        score: 7.50,
+        athlete: 'Degrieck',
+        heat: 'Heat 21a',
+      },
+    },
+    chartData: [
+      {
+        type: 'Wave',
+        best: 7.50,
+        average: 2.95,
+        bestBy: { athlete: 'Degrieck', heat: '21a', score: 7.50 },
+      },
+      {
+        type: 'Forward Loop',
+        best: 7.10,
+        average: 2.82,
+        bestBy: { athlete: 'Ruano Moreno', heat: '19a', score: 7.10 },
+      },
+      {
+        type: 'Backloop',
+        best: 6.95,
+        average: 4.82,
+        bestBy: { athlete: 'Offringa', heat: '49a', score: 6.95 },
+      },
+      {
+        type: 'Pushloop',
+        best: 6.88,
+        average: 4.29,
+        bestBy: { athlete: 'Ruano Moreno', heat: '23a', score: 6.88 },
+      },
+      {
+        type: 'Tabletop',
+        best: 2.12,
+        average: 1.08,
+        bestBy: { athlete: 'Snady', heat: '45a', score: 2.12 },
+      },
+    ],
+    topHeatScores: [
+      { rider: 'Degrieck', score: 24.5, heatNo: '21a' },
+      { rider: 'Offringa', score: 23.95, heatNo: '49a' },
+      { rider: 'Offringa', score: 23.63, heatNo: '20a' },
+      { rider: 'Ruano Moreno', score: 23.58, heatNo: '23a' },
+      { rider: 'Offringa', score: 21.69, heatNo: '48a' },
+    ],
+    topJumpScores: [
+      { rider: 'Ruano Moreno', score: 7.10, move: 'Forward Loop', heatNo: '19a' },
+      { rider: 'Offringa', score: 6.95, move: 'Backloop', heatNo: '49a' },
+      { rider: 'Offringa', score: 6.88, move: 'Backloop', heatNo: '20a' },
+      { rider: 'Offringa', score: 6.88, move: 'Backloop', heatNo: '23a' },
+      { rider: 'Ruano Moreno', score: 6.75, move: 'Backloop', heatNo: '19a' },
+    ],
+    topWaveScores: [
+      { rider: 'Degrieck', score: 7.50, heatNo: '21a' },
+      { rider: 'Ruano Moreno', score: 6.75, heatNo: '23a' },
+      { rider: 'Offringa', score: 6.12, heatNo: '20a' },
+      { rider: 'Offringa', score: 6.12, heatNo: '49a' },
+      { rider: 'Ruano Moreno', score: 6.00, heatNo: '22a' },
+    ],
+  };
 
   return (
     <div className="min-h-screen pt-16">
@@ -171,12 +249,34 @@ const EventResultsPage = () => {
                 </div>
               </FeatureCard>
             </div>
+          ) : activeTab === 'event-stats' ? (
+            <div className="space-y-8">
+              {/* Summary Cards */}
+              <StatsSummaryCards
+                bestHeatScore={dummyStatsData.summaryCards.bestHeatScore}
+                bestJumpScore={dummyStatsData.summaryCards.bestJumpScore}
+                bestWaveScore={dummyStatsData.summaryCards.bestWaveScore}
+              />
+
+              {/* Bar Chart */}
+              <FeatureCard title="Best and Average Counting Score by Type" isLoading={false}>
+                <EventStatsChart data={dummyStatsData.chartData} />
+              </FeatureCard>
+
+              {/* Top Scores Tables */}
+              <TopScoresTable
+                topHeatScores={dummyStatsData.topHeatScores}
+                topJumpScores={dummyStatsData.topJumpScores}
+                topWaveScores={dummyStatsData.topWaveScores}
+                isLoading={false}
+              />
+            </div>
           ) : (
             <div className="text-center py-20">
               <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-12 max-w-md mx-auto">
                 <h3 className="text-xl font-semibold text-gray-400 mb-2">Coming Soon</h3>
                 <p className="text-gray-500">
-                  {activeTab === 'event-stats' ? 'Event statistics' : 'Athlete statistics'} will be available here
+                  Athlete statistics will be available here
                 </p>
               </div>
             </div>

@@ -336,12 +336,27 @@ transition-all duration-300
 
 ## 📐 Spacing System
 
-### Standard Padding/Margin
-```
-py-12 md:py-16  /* Section vertical spacing */
-px-4 sm:px-6 lg:px-8  /* Horizontal padding (responsive) */
-gap-6  /* Grid gap for cards */
-mb-6  /* Margin bottom between elements */
+### Spacing Scale
+Consistent spacing values used throughout the application:
+
+```css
+/* Section Spacing (space-y-*) */
+space-y-8   /* 32px - Primary spacing between major sections */
+space-y-6   /* 24px - Secondary spacing within sections */
+space-y-4   /* 16px - Tertiary spacing within components */
+
+/* Grid Gaps (gap-*) */
+gap-6       /* 24px - Standard card grid gap */
+gap-4       /* 16px - Compact grid gap */
+gap-8       /* 32px - Large grid gap */
+
+/* Padding/Margin */
+p-6         /* 24px - Standard card padding */
+py-12 md:py-16  /* Section vertical spacing (48px → 64px) */
+px-4 sm:px-6 lg:px-8  /* Horizontal padding (16px → 24px → 32px) */
+mb-8        /* 32px - Bottom margin for major sections */
+mb-6        /* 24px - Bottom margin between elements */
+mb-4        /* 16px - Bottom margin within components */
 ```
 
 ### Container Max Widths
@@ -349,6 +364,39 @@ mb-6  /* Margin bottom between elements */
 max-w-7xl  /* Main container (1280px) */
 max-w-4xl  /* Content container (896px) */
 ```
+
+### Usage Guidelines
+
+**Page Layout Pattern:**
+```jsx
+<section className="px-4 sm:px-6 lg:px-8 py-6 pb-20">
+  <div className="max-w-7xl mx-auto">
+    <div className="space-y-8">
+      {/* Major sections with 32px vertical spacing */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Cards with 24px gap */}
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+**Component Internal Spacing:**
+```jsx
+<div className="space-y-4">
+  {/* Elements within component with 16px vertical spacing */}
+  <div className="p-6">
+    {/* Standard card padding (24px) */}
+  </div>
+</div>
+```
+
+**Best Practices:**
+- Use `space-y-8` between major sections (summary cards → chart → tables)
+- Use `gap-6` for card grids (3-column layouts, feature cards)
+- Use `space-y-4` within individual components (chart legend → chart, table → button)
+- Use `p-6` for standard card content padding
+- Maintain responsive padding: `px-4 sm:px-6 lg:px-8`
 
 ---
 
