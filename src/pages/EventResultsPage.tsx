@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Star } from 'lucide-react';
+import { ArrowLeft, Star, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiService } from '../services/api';
@@ -143,7 +143,26 @@ const EventResultsPage = () => {
                     <span>•</span>
                     <div className="flex items-center gap-1">
                       <Star className="text-yellow-400 fill-yellow-400" size={16} />
-                      <span className="text-yellow-400 font-semibold">{event.stars}</span>
+                      <span className="font-semibold">{event.stars}</span>
+                    </div>
+                  </>
+                )}
+                {(event.total_men || event.total_women) && (
+                  <>
+                    <span>•</span>
+                    <div className="flex items-center gap-3">
+                      {event.total_men !== null && event.total_men > 0 && (
+                        <div className="flex items-center gap-1">
+                          <User className="text-blue-400" size={16} />
+                          <span className="font-semibold">{event.total_men}</span>
+                        </div>
+                      )}
+                      {event.total_women !== null && event.total_women > 0 && (
+                        <div className="flex items-center gap-1">
+                          <User className="text-pink-400" size={16} />
+                          <span className="font-semibold">{event.total_women}</span>
+                        </div>
+                      )}
                     </div>
                   </>
                 )}

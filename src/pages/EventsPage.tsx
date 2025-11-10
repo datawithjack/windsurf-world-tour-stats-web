@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiService } from '../services/api';
-import { Calendar, MapPin, Star } from 'lucide-react';
+import { Calendar, MapPin, Star, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -118,6 +118,22 @@ const EventsPage = () => {
                         <Calendar className="text-cyan-400 flex-shrink-0" size={16} />
                         <span className="text-sm">{event.event_date}</span>
                       </div>
+                      {(event.total_men || event.total_women) && (
+                        <div className="flex items-center gap-3">
+                          {event.total_men !== null && event.total_men > 0 && (
+                            <div className="flex items-center gap-1">
+                              <User className="text-blue-400 flex-shrink-0" size={16} />
+                              <span className="text-sm font-semibold">{event.total_men}</span>
+                            </div>
+                          )}
+                          {event.total_women !== null && event.total_women > 0 && (
+                            <div className="flex items-center gap-1">
+                              <User className="text-pink-400 flex-shrink-0" size={16} />
+                              <span className="text-sm font-semibold">{event.total_women}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>

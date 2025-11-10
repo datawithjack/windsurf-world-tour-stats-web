@@ -31,6 +31,9 @@ export interface Event {
   country_code: string;
   stars: number | null;
   event_image_url: string;
+  total_athletes: number | null;
+  total_men: number | null;
+  total_women: number | null;
   scraped_at: string;
   created_at: string;
   updated_at: string;
