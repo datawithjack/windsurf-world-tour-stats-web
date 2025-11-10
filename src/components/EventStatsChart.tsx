@@ -6,6 +6,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  LabelList,
 } from 'recharts';
 
 interface MoveTypeData {
@@ -36,7 +37,7 @@ const CustomTooltip = (props: any) => {
         <p className="font-semibold text-white mb-2">{label}</p>
         {isBest && data.bestBy ? (
           <>
-            <p className="text-sm text-cyan-400 mb-1">
+            <p className="text-sm text-teal-400 mb-1">
               Best: {data.best.toFixed(2)} pts
             </p>
             <p className="text-xs text-gray-400">
@@ -64,7 +65,7 @@ const EventStatsChart = ({ data }: EventStatsChartProps) => {
       {/* Custom Legend at Top */}
       <div className="flex items-center justify-center gap-6 text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-cyan-400"></div>
+          <div className="w-3 h-3 rounded-full bg-teal-400"></div>
           <span className="text-gray-400">Best Score</span>
         </div>
         <div className="flex items-center gap-2">
@@ -95,21 +96,35 @@ const EventStatsChart = ({ data }: EventStatsChartProps) => {
             style={{ fontSize: '12px' }}
             width={90}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(56, 189, 248, 0.1)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(45, 212, 191, 0.1)' }} />
           <Bar
             dataKey="best"
             name="Best Score"
-            fill="#38bdf8"
+            fill="#2dd4bf"
             radius={[0, 4, 4, 0]}
             animationDuration={800}
-          />
+          >
+            <LabelList
+              dataKey="best"
+              position="right"
+              style={{ fill: '#f1f5f9', fontSize: '12px', fontWeight: 600 }}
+              formatter={(value: any) => typeof value === 'number' ? value.toFixed(2) : value}
+            />
+          </Bar>
           <Bar
             dataKey="average"
             name="Average Score"
             fill="#475569"
             radius={[0, 4, 4, 0]}
             animationDuration={800}
-          />
+          >
+            <LabelList
+              dataKey="average"
+              position="right"
+              style={{ fill: '#cbd5e1', fontSize: '12px', fontWeight: 500 }}
+              formatter={(value: any) => typeof value === 'number' ? value.toFixed(2) : value}
+            />
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

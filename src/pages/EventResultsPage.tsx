@@ -8,6 +8,7 @@ import ResultsTable from '../components/ResultsTable';
 import StatsSummaryCards from '../components/StatsSummaryCards';
 import EventStatsChart from '../components/EventStatsChart';
 import TopScoresTable from '../components/TopScoresTable';
+import AthleteStatsTab from '../components/AthleteStatsTab';
 
 const EventResultsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -301,14 +302,7 @@ const EventResultsPage = () => {
               )}
             </div>
           ) : (
-            <div className="text-center py-20">
-              <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-12 max-w-md mx-auto">
-                <h3 className="text-xl font-semibold text-gray-400 mb-2">Coming Soon</h3>
-                <p className="text-gray-500">
-                  Athlete statistics will be available here
-                </p>
-              </div>
-            </div>
+            <AthleteStatsTab />
           )}
         </div>
       </section>
