@@ -148,3 +148,14 @@ export interface EventStatsResponse {
     generated_at: string;
   };
 }
+
+// Global Stats Types
+export interface StatMetric {
+  metric: string;
+  value: string;
+}
+
+export interface GlobalStatsResponse {
+  stats: StatMetric[];
+  generated_at: string;
+}

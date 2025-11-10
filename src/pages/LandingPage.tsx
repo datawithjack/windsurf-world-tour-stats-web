@@ -1,8 +1,21 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import StatCounter from '../components/StatCounter';
+import { apiService } from '../services/api';
 
 const LandingPage = () => {
+  // Fetch global stats from API
+  const { data: statsData, isLoading, isError } = useQuery({
+    queryKey: ['globalStats'],
+    queryFn: () => apiService.getGlobalStats(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Parse stats from API response or use fallback values
+  const totalEvents = statsData?.stats.find(s => s.metric === 'total events')?.value || '35';
+  const totalAthletes = statsData?.stats.find(s => s.metric === 'total athletes')?.value || '250';
+  const totalScores = statsData?.stats.find(s => s.metric === 'total scores')?.value || '25000';
 
   return (
     <div className="min-h-screen pt-16">
@@ -44,7 +57,11 @@ const LandingPage = () => {
             {/* Events Stat */}
             <div className="text-center">
               <div className="mb-2">
-                <StatCounter end={35} duration={1500} delay={0} />
+                {isLoading || isError ? (
+                  <div className="text-6xl font-bold text-gray-500">-</div>
+                ) : (
+                  <StatCounter end={parseInt(totalEvents)} duration={1500} delay={0} />
+                )}
               </div>
               <p className="text-sm text-gray-400" style={{ fontFamily: 'var(--font-inter)' }}>
                 Events (since 2016)
@@ -54,7 +71,11 @@ const LandingPage = () => {
             {/* Athletes Stat */}
             <div className="text-center">
               <div className="mb-2">
-                <StatCounter end={250} duration={1500} delay={100} />
+                {isLoading || isError ? (
+                  <div className="text-6xl font-bold text-gray-500">-</div>
+                ) : (
+                  <StatCounter end={parseInt(totalAthletes)} duration={1500} delay={100} />
+                )}
               </div>
               <p className="text-sm text-gray-400" style={{ fontFamily: 'var(--font-inter)' }}>
                 Athletes
@@ -64,7 +85,11 @@ const LandingPage = () => {
             {/* Scores Stat */}
             <div className="text-center">
               <div className="mb-2">
-                <StatCounter end={25000} duration={1500} delay={200} suffix="+" />
+                {isLoading || isError ? (
+                  <div className="text-6xl font-bold text-gray-500">-</div>
+                ) : (
+                  <StatCounter end={parseInt(totalScores)} duration={1500} delay={200} />
+                )}
               </div>
               <p className="text-sm text-gray-400" style={{ fontFamily: 'var(--font-inter)' }}>
                 Wave and Jump Scores
