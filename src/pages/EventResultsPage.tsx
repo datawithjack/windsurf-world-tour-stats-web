@@ -9,11 +9,13 @@ import StatsSummaryCards from '../components/StatsSummaryCards';
 import EventStatsChart from '../components/EventStatsChart';
 import TopScoresTable from '../components/TopScoresTable';
 import AthleteStatsTab from '../components/AthleteStatsTab';
+import { dummyAthletes } from '../data/athleteStatsDummy';
 
 const EventResultsPage = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<'results' | 'event-stats' | 'athlete-stats'>('results');
   const [genderFilter, setGenderFilter] = useState<'all' | 'men' | 'women'>('women');
+  const [selectedAthleteId, setSelectedAthleteId] = useState<number>(1);
   const [defaultSet, setDefaultSet] = useState(false);
 
   const { data: event, isLoading, error } = useQuery({
@@ -214,7 +216,7 @@ const EventResultsPage = () => {
       {/* Filters Section */}
       <section className="px-4 sm:px-6 lg:px-8 py-4 pb-2">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <label className="text-sm font-medium text-gray-400">Filter by:</label>
             <select
               value={genderFilter}
@@ -224,6 +226,25 @@ const EventResultsPage = () => {
               <option value="men">Men</option>
               <option value="women">Women</option>
             </select>
+
+            {/* Athlete Filter - only show on Athlete Stats tab */}
+            {activeTab === 'athlete-stats' && (
+              <>
+                <span className="text-gray-600">|</span>
+                <label className="text-sm font-medium text-gray-400">Athlete:</label>
+                <select
+                  value={selectedAthleteId}
+                  onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
+                  className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+                >
+                  {dummyAthletes.map((athlete) => (
+                    <option key={athlete.id} value={athlete.id}>
+                      {athlete.name} ({athlete.countryCode})
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -302,7 +323,7 @@ const EventResultsPage = () => {
               )}
             </div>
           ) : (
-            <AthleteStatsTab />
+            <AthleteStatsTab selectedAthleteId={selectedAthleteId} />
           )}
         </div>
       </section>

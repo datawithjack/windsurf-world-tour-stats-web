@@ -1,52 +1,33 @@
-import { useState } from 'react';
-import { dummyAthletes, dummyAthleteStats } from '../data/athleteStatsDummy';
+import { dummyAthleteStats } from '../data/athleteStatsDummy';
 import AthleteDetailPanel from './AthleteDetailPanel';
-import { Info } from 'lucide-react';
+import { User, Trophy } from 'lucide-react';
 
-const AthleteStatsTab = () => {
-  const [selectedAthleteId, setSelectedAthleteId] = useState<number>(1);
+interface AthleteStatsTabProps {
+  selectedAthleteId: number;
+}
 
+const AthleteStatsTab = ({ selectedAthleteId }: AthleteStatsTabProps) => {
   const selectedData = dummyAthleteStats[selectedAthleteId];
 
   return (
     <div className="space-y-6">
-      {/* Info Notice */}
-      <div className="bg-blue-500/10 border border-blue-500/50 rounded-lg p-4">
-        <div className="flex items-start gap-3">
-          <Info className="text-blue-400 flex-shrink-0 mt-0.5" size={20} />
-          <div>
-            <h3 className="text-sm font-semibold text-blue-400 mb-1">Using Placeholder Data</h3>
-            <p className="text-xs text-gray-300">
-              This page is currently displaying dummy data from a template. Real athlete statistics will be
-              displayed once API endpoints are implemented.
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Athlete Profile Card */}
+      {selectedData && (
+        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 relative">
+          <div className="flex items-start gap-6">
+            {/* Profile Photo Placeholder */}
+            <div className="flex-shrink-0">
+              <div className="w-24 h-24 bg-slate-700/50 rounded-lg flex items-center justify-center border border-slate-600/50">
+                <User className="text-gray-500" size={40} />
+              </div>
+            </div>
 
-      {/* Athlete Selector and Profile */}
-      <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          {/* Athlete Selector */}
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-400 mb-2">Select Athlete:</label>
-            <select
-              value={selectedAthleteId}
-              onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
-              className="w-full bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all"
-            >
-              {dummyAthletes.map((athlete) => (
-                <option key={athlete.id} value={athlete.id}>
-                  {athlete.name} ({athlete.country})
-                </option>
-              ))}
-            </select>
-          </div>
+            {/* Profile Info */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-2xl font-bold text-white mb-1">{selectedData.profile.name}</h2>
+              <p className="text-sm text-gray-400 mb-4">{selectedData.profile.country}</p>
 
-          {/* Athlete Profile Info */}
-          {selectedData && (
-            <div className="flex-1 border-t sm:border-t-0 sm:border-l border-slate-700/50 pt-4 sm:pt-0 sm:pl-6">
-              <div className="space-y-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <span className="text-xs text-gray-400 uppercase tracking-wide">Sponsors:</span>
                   <p className="text-sm text-gray-300">{selectedData.profile.sponsors || 'N/A'}</p>
@@ -59,9 +40,34 @@ const AthleteStatsTab = () => {
                 )}
               </div>
             </div>
-          )}
+
+            {/* Overall Position Stat Box - Top Right */}
+            <div className="absolute top-6 right-6 text-right">
+              <div className="bg-gradient-to-br from-teal-600/20 to-cyan-600/20 backdrop-blur-sm border border-teal-500/50 rounded-lg px-6 py-4 min-w-[120px]">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  {selectedData.summaryStats.overallPosition <= 3 && (
+                    <Trophy
+                      className={`${
+                        selectedData.summaryStats.overallPosition === 1 ? 'text-yellow-400' :
+                        selectedData.summaryStats.overallPosition === 2 ? 'text-gray-300' :
+                        'text-orange-400'
+                      }`}
+                      size={20}
+                    />
+                  )}
+                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Position</span>
+                </div>
+                <p className="text-4xl font-bold text-white">
+                  {selectedData.summaryStats.overallPosition === 1 ? '1st' :
+                   selectedData.summaryStats.overallPosition === 2 ? '2nd' :
+                   selectedData.summaryStats.overallPosition === 3 ? '3rd' :
+                   `${selectedData.summaryStats.overallPosition}th`}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Athlete Stats Detail */}
       {selectedData ? (

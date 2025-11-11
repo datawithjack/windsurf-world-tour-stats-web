@@ -25,20 +25,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Overall Position */}
-        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 hover:bg-slate-800/60 transition-all duration-300">
-          <h3 className="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">
-            Overall Position
-          </h3>
-          <p className="text-5xl font-bold text-white mb-2">
-            {summaryStats.overallPosition === 1 ? '1st' :
-             summaryStats.overallPosition === 2 ? '2nd' :
-             summaryStats.overallPosition === 3 ? '3rd' :
-             `${summaryStats.overallPosition}th`}
-          </p>
-        </div>
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Best Heat Score */}
         <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 hover:bg-slate-800/60 transition-all duration-300">
           <h3 className="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">
