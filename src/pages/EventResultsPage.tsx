@@ -9,10 +9,11 @@ import StatsSummaryCards from '../components/StatsSummaryCards';
 import EventStatsChart from '../components/EventStatsChart';
 import TopScoresTable from '../components/TopScoresTable';
 import AthleteStatsTab from '../components/AthleteStatsTab';
+import HeadToHeadComparison from '../components/HeadToHeadComparison';
 
 const EventResultsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [activeTab, setActiveTab] = useState<'results' | 'event-stats' | 'athlete-stats'>('results');
+  const [activeTab, setActiveTab] = useState<'results' | 'event-stats' | 'athlete-stats' | 'head-to-head'>('results');
   const [genderFilter, setGenderFilter] = useState<'all' | 'men' | 'women'>('women');
   const [selectedAthleteId, setSelectedAthleteId] = useState<number | null>(null);
   const [defaultSet, setDefaultSet] = useState(false);
@@ -232,52 +233,64 @@ const EventResultsPage = () => {
             >
               Athlete Stats
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Filters Section */}
-      <section className="px-4 sm:px-6 lg:px-8 py-4 pb-2">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4 flex-wrap">
-            <label className="text-sm font-medium text-gray-400">Filter by:</label>
-            <select
-              value={genderFilter}
-              onChange={(e) => setGenderFilter(e.target.value as 'all' | 'men' | 'women')}
-              className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+            <button
+              onClick={() => setActiveTab('head-to-head')}
+              className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
+                activeTab === 'head-to-head'
+                  ? 'text-white border-b-2 border-cyan-500'
+                  : 'text-gray-500 hover:text-gray-300'
+              }`}
             >
-              <option value="men">Men</option>
-              <option value="women">Women</option>
-            </select>
-
-            {/* Athlete Filter - only show on Athlete Stats tab */}
-            {activeTab === 'athlete-stats' && (
-              <>
-                <span className="text-gray-600">|</span>
-                <label className="text-sm font-medium text-gray-400">Athlete:</label>
-                <select
-                  value={selectedAthleteId || ''}
-                  onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
-                  className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
-                  disabled={athleteListLoading || !athleteListData?.athletes.length}
-                >
-                  {athleteListLoading ? (
-                    <option>Loading athletes...</option>
-                  ) : athleteListData?.athletes && athleteListData.athletes.length > 0 ? (
-                    athleteListData.athletes.map((athlete) => (
-                      <option key={athlete.athlete_id} value={athlete.athlete_id}>
-                        {athlete.overall_position}. {athlete.name} ({athlete.country_code})
-                      </option>
-                    ))
-                  ) : (
-                    <option>No athletes found</option>
-                  )}
-                </select>
-              </>
-            )}
+              Head to Head
+            </button>
           </div>
         </div>
       </section>
+
+      {/* Filters Section - hide on Head to Head tab */}
+      {activeTab !== 'head-to-head' && (
+        <section className="px-4 sm:px-6 lg:px-8 py-4 pb-2">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-4 flex-wrap">
+              <label className="text-sm font-medium text-gray-400">Filter by:</label>
+              <select
+                value={genderFilter}
+                onChange={(e) => setGenderFilter(e.target.value as 'all' | 'men' | 'women')}
+                className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+              >
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+              </select>
+
+              {/* Athlete Filter - only show on Athlete Stats tab */}
+              {activeTab === 'athlete-stats' && (
+                <>
+                  <span className="text-gray-600">|</span>
+                  <label className="text-sm font-medium text-gray-400">Athlete:</label>
+                  <select
+                    value={selectedAthleteId || ''}
+                    onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
+                    className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+                    disabled={athleteListLoading || !athleteListData?.athletes.length}
+                  >
+                    {athleteListLoading ? (
+                      <option>Loading athletes...</option>
+                    ) : athleteListData?.athletes && athleteListData.athletes.length > 0 ? (
+                      athleteListData.athletes.map((athlete) => (
+                        <option key={athlete.athlete_id} value={athlete.athlete_id}>
+                          {athlete.overall_position}. {athlete.name} ({athlete.country_code})
+                        </option>
+                      ))
+                    ) : (
+                      <option>No athletes found</option>
+                    )}
+                  </select>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Tab Content */}
       <section className="px-4 sm:px-6 lg:px-8 py-6 pb-20">
@@ -352,12 +365,14 @@ const EventResultsPage = () => {
                 </div>
               )}
             </div>
-          ) : (
+          ) : activeTab === 'athlete-stats' ? (
             <AthleteStatsTab
               eventId={event?.id || 0}
               selectedAthleteId={selectedAthleteId}
               sex={genderFilter === 'men' ? 'Men' : 'Women'}
             />
+          ) : (
+            <HeadToHeadComparison />
           )}
         </div>
       </section>
