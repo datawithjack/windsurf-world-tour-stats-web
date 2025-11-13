@@ -41,35 +41,49 @@ const AthleteHeatScoresChart = ({ data }: AthleteHeatScoresChartProps) => {
   };
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart
-        data={data}
-        margin={{ top: 30, right: 30, left: 20, bottom: 40 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
-        <XAxis
-          dataKey="heatNumber"
-          stroke="#94a3b8"
-          fontSize={12}
-          label={{ value: 'Heat No.', position: 'insideBottom', offset: -10, fill: '#94a3b8' }}
-        />
-        <YAxis
-          stroke="#94a3b8"
-          fontSize={12}
-          label={{ value: 'Score (pts)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }}
-        />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(45, 212, 191, 0.1)' }} />
-        <Bar dataKey="score" radius={[4, 4, 0, 0]}>
-          <LabelList dataKey="score" content={renderCustomLabel} />
-          {data.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={entry.type === 'Double' ? '#14b8a6' : '#2dd4bf'}
-            />
-          ))}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
+    <div>
+      {/* Legend */}
+      <div className="flex justify-center gap-6 mb-4 text-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded bg-[#14b8a6]"></div>
+          <span className="text-gray-400">Double Elimination</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded bg-[#2dd4bf]"></div>
+          <span className="text-gray-400">Single Elimination</span>
+        </div>
+      </div>
+
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart
+          data={data}
+          margin={{ top: 30, right: 30, left: 20, bottom: 40 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
+          <XAxis
+            dataKey="heatNumber"
+            stroke="#94a3b8"
+            fontSize={12}
+            label={{ value: 'Heat No.', position: 'insideBottom', offset: -10, fill: '#94a3b8' }}
+          />
+          <YAxis
+            stroke="#94a3b8"
+            fontSize={12}
+            label={{ value: 'Score (pts)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }}
+          />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(45, 212, 191, 0.1)' }} />
+          <Bar dataKey="score" radius={[4, 4, 0, 0]}>
+            <LabelList dataKey="score" content={renderCustomLabel} />
+            {data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry.type === 'Double' ? '#14b8a6' : '#2dd4bf'}
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

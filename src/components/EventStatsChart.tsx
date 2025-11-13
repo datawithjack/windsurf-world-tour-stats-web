@@ -114,7 +114,7 @@ const EventStatsChart = ({ data }: EventStatsChartProps) => {
           <Bar
             dataKey="average"
             name="Average Score"
-            fill="#475569"
+            fill="#64748b"
             radius={[0, 4, 4, 0]}
             animationDuration={800}
           >

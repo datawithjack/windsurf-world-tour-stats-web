@@ -13,7 +13,7 @@ const FeatureCard = ({ title, children, isLoading = false }: FeatureCardProps) =
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 hover:bg-slate-800/60 transition-all duration-300 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10"
+      className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6"
     >
       <h3 className="text-base font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-inter)' }}>
         {title}

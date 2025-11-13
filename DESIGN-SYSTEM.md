@@ -56,11 +56,13 @@ Use for hero sections and major page titles:
 ```
 
 ### Heading Sizes (Bebas Neue)
-Use for section titles and card headers:
+Use for page titles, hero sections, and major navigation:
 - **heading-xl**: 48px (3rem)
 - **heading-lg**: 36px (2.25rem)
 - **heading-md**: 30px (1.875rem)
 - **heading-sm**: 24px (1.5rem)
+
+**Exception:** For data-heavy components (stat cards, chart titles, analytics dashboards), use Inter font instead of Bebas Neue for better readability and professional data presentation.
 
 ### Body Text Sizes (Inter)
 Use for descriptions, paragraphs, and content:
@@ -301,6 +303,32 @@ import FeatureCard from '@/components/FeatureCard';
 </FeatureCard>
 ```
 
+### Stat Cards (Data Visualization)
+For displaying individual metrics and statistics.
+
+```jsx
+<div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 hover:bg-slate-800/60 transition-all duration-300">
+  <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
+    Best Heat Score
+  </h3>
+  <p className="text-5xl font-bold text-white mb-2">
+    23.58 <span className="text-2xl text-gray-400">pts</span>
+  </p>
+  <p className="text-xs text-gray-400">Heat 23a</p>
+</div>
+```
+
+**Key Patterns:**
+- Title: Inter font (not Bebas Neue), `text-base font-medium text-white`, sentence case
+- Value: Large bold number (`text-5xl font-bold text-white`)
+- Unit: Smaller gray text (`text-2xl text-gray-400`)
+- Metadata: Extra small gray text (`text-xs text-gray-400`)
+
+**Color Hierarchy:**
+- `text-white` - Titles and primary values (what/how much)
+- `text-gray-400` - Metadata and context (when/where/who)
+- `text-gray-500` - Tertiary information
+
 ---
 
 ## 🎭 Effects & Styling Patterns
@@ -475,8 +503,8 @@ export default function EventsPage() {
 ### DO ✅
 - Use `PageHero` for all page headers
 - Left-align hero sections (matches brand aesthetic)
-- Use Bebas Neue for ALL headings
-- Use Inter for ALL body text
+- Use Bebas Neue for page titles, heroes, and navigation
+- Use Inter for body text AND data visualization components (stat cards, chart titles)
 - Apply frosted glass effect to cards
 - Use cyan (`#38bdf8`) for accents and highlights
 - Maintain consistent spacing with `Section` component

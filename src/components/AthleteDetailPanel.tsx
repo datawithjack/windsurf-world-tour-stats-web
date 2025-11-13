@@ -27,8 +27,8 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Best Heat Score */}
-        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 hover:bg-slate-800/60 transition-all duration-300">
-          <h3 className="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">
+        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+          <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Heat Score
           </h3>
           <p className="text-5xl font-bold text-white mb-2">
@@ -41,8 +41,8 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
         </div>
 
         {/* Best Jump Score */}
-        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 hover:bg-slate-800/60 transition-all duration-300">
-          <h3 className="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">
+        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+          <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Jump Score
           </h3>
           <p className="text-5xl font-bold text-white mb-2">
@@ -56,8 +56,8 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
         </div>
 
         {/* Best Wave Score */}
-        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 hover:bg-slate-800/60 transition-all duration-300">
-          <h3 className="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">
+        <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+          <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Wave Score
           </h3>
           <p className="text-5xl font-bold text-white mb-2">
@@ -109,7 +109,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                 {jumpScores.map((score, index) => (
                   <tr
                     key={index}
-                    className="border-b border-slate-700/30 hover:bg-slate-700/20 transition-colors"
+                    className="border-b border-slate-700/30 hover:bg-slate-700/30 transition-colors"
                   >
                     <td className="py-3 px-2 text-gray-300">{score.heatNo}</td>
                     <td className="py-3 px-2 text-gray-300">{score.move}</td>
@@ -158,7 +158,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                 {waveScores.map((score, index) => (
                   <tr
                     key={index}
-                    className="border-b border-slate-700/30 hover:bg-slate-700/20 transition-colors"
+                    className="border-b border-slate-700/30 hover:bg-slate-700/30 transition-colors"
                   >
                     <td className="py-3 px-2 text-gray-300">{score.heatNo}</td>
                     <td className="py-3 px-2 text-right font-semibold text-white">

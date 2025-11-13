@@ -25,7 +25,7 @@ const AthleteStatsTab = ({ selectedAthleteId }: AthleteStatsTabProps) => {
             {/* Profile Info */}
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-bold text-white mb-1">{selectedData.profile.name}</h2>
-              <p className="text-sm text-gray-400 mb-4">{selectedData.profile.country}</p>
+              <p className="text-sm text-gray-300 mb-4">{selectedData.profile.country}</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
