@@ -162,3 +162,102 @@ export interface GlobalStatsResponse {
   stats: StatMetric[];
   generated_at: string;
 }
+
+// Event Athletes List Types
+export interface AthleteListItem {
+  athlete_id: number;
+  name: string;
+  country: string;
+  country_code: string;
+  overall_position: number;
+  sail_number: string | null;
+  profile_image: string | null;
+  total_heats: number;
+  best_heat_score: number;
+}
+
+export interface AthleteListResponse {
+  event_id: number;
+  event_name: string;
+  sex: string;
+  athletes: AthleteListItem[];
+  metadata: {
+    total_athletes: number;
+    generated_at: string;
+  };
+}
+
+// Athlete Event Stats Types
+export interface AthleteProfile {
+  name: string;
+  country: string;
+  country_code: string;
+  profile_image: string | null;
+  sponsors: string | null;
+  sail_number: string | null;
+}
+
+export interface AthleteSummaryStats {
+  overall_position: number;
+  best_heat_score: {
+    score: number;
+    heat: string;
+    opponents: string[] | null;
+  };
+  best_jump_score: {
+    score: number;
+    heat: string;
+    move: string;
+    opponents: string[] | null;
+  };
+  best_wave_score: {
+    score: number;
+    heat: string;
+    opponents: string[] | null;
+  };
+}
+
+export interface MoveTypeScore {
+  move_type: string;
+  best_score: number;
+  average_score: number;
+}
+
+export interface HeatScore {
+  heat_number: string;
+  score: number;
+  elimination_type: 'Single' | 'Double';
+}
+
+export interface JumpScore {
+  heat_number: string;
+  move: string;
+  score: number;
+  counting: boolean;
+}
+
+export interface WaveScore {
+  heat_number: string;
+  score: number;
+  counting: boolean;
+  wave_index?: number;
+}
+
+export interface AthleteStatsResponse {
+  event_id: number;
+  event_name: string;
+  sex: 'Men' | 'Women';
+  athlete_id: number;
+  profile: AthleteProfile;
+  summary_stats: AthleteSummaryStats;
+  move_type_scores: MoveTypeScore[];
+  heat_scores: HeatScore[];
+  jump_scores: JumpScore[];
+  wave_scores: WaveScore[];
+  metadata: {
+    total_heats: number;
+    total_jumps: number;
+    total_waves: number;
+    generated_at: string;
+  };
+}

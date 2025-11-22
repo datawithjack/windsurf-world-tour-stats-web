@@ -1,24 +1,24 @@
-import type { AthleteStatsData } from '../data/athleteStatsDummy';
+import type { AthleteStatsResponse } from '../types';
 import FeatureCard from './FeatureCard';
 import EventStatsChart from './EventStatsChart';
 import AthleteHeatScoresChart from './AthleteHeatScoresChart';
 
 interface AthleteDetailPanelProps {
-  data: AthleteStatsData;
+  data: AthleteStatsResponse;
 }
 
 const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
-  const { summaryStats, moveTypeScores, heatScores, jumpScores, waveScores } = data;
+  const { summary_stats, move_type_scores, heat_scores, jump_scores, wave_scores } = data;
 
   // Transform move type scores for EventStatsChart
-  const chartData = moveTypeScores.map(score => ({
-    type: score.type,
-    best: score.best,
-    average: score.average,
+  const chartData = move_type_scores.map(score => ({
+    type: score.move_type,
+    best: score.best_score,
+    average: score.average_score,
     bestBy: {
       athlete: data.profile.name,
-      heat: '', // We don't have this detail in dummy data
-      score: score.best,
+      heat: '',
+      score: score.best_score,
     },
   }));
 
@@ -32,11 +32,11 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
             Best Heat Score
           </h3>
           <p className="text-5xl font-bold text-white mb-2">
-            {summaryStats.bestHeatScore.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
+            {summary_stats.best_heat_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
           </p>
-          <p className="text-xs text-gray-400">{summaryStats.bestHeatScore.heat}</p>
-          {summaryStats.bestHeatScore.opponents && (
-            <p className="text-xs text-gray-500 mt-1">{summaryStats.bestHeatScore.opponents}</p>
+          <p className="text-xs text-gray-400">Heat {summary_stats.best_heat_score.heat}</p>
+          {summary_stats.best_heat_score.opponents && summary_stats.best_heat_score.opponents.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_heat_score.opponents.join(', ')}</p>
           )}
         </div>
 
@@ -46,13 +46,13 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
             Best Jump Score
           </h3>
           <p className="text-5xl font-bold text-white mb-2">
-            {summaryStats.bestJumpScore.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
+            {summary_stats.best_jump_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
           </p>
-          <p className="text-xs text-gray-400">{summaryStats.bestJumpScore.heat}</p>
-          {summaryStats.bestJumpScore.opponents && (
-            <p className="text-xs text-gray-500 mt-1">{summaryStats.bestJumpScore.opponents}</p>
+          <p className="text-xs text-gray-400">Heat {summary_stats.best_jump_score.heat}</p>
+          {summary_stats.best_jump_score.opponents && summary_stats.best_jump_score.opponents.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_jump_score.opponents.join(', ')}</p>
           )}
-          <p className="text-xs text-cyan-400 mt-1">{summaryStats.bestJumpScore.move}</p>
+          <p className="text-xs text-cyan-400 mt-1">{summary_stats.best_jump_score.move}</p>
         </div>
 
         {/* Best Wave Score */}
@@ -61,11 +61,11 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
             Best Wave Score
           </h3>
           <p className="text-5xl font-bold text-white mb-2">
-            {summaryStats.bestWaveScore.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
+            {summary_stats.best_wave_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
           </p>
-          <p className="text-xs text-gray-400">{summaryStats.bestWaveScore.heat}</p>
-          {summaryStats.bestWaveScore.opponents && (
-            <p className="text-xs text-gray-500 mt-1">{summaryStats.bestWaveScore.opponents}</p>
+          <p className="text-xs text-gray-400">Heat {summary_stats.best_wave_score.heat}</p>
+          {summary_stats.best_wave_score.opponents && summary_stats.best_wave_score.opponents.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_wave_score.opponents.join(', ')}</p>
           )}
         </div>
       </div>
@@ -79,7 +79,11 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
 
         {/* Heat Scores */}
         <FeatureCard title="Heat Scores" isLoading={false}>
-          <AthleteHeatScoresChart data={heatScores} />
+          <AthleteHeatScoresChart data={heat_scores.map(h => ({
+            heatNumber: parseInt(h.heat_number),
+            score: h.score,
+            type: h.elimination_type
+          }))} />
         </FeatureCard>
       </div>
 
@@ -106,12 +110,12 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                 </tr>
               </thead>
               <tbody>
-                {jumpScores.map((score, index) => (
+                {jump_scores.map((score, index) => (
                   <tr
                     key={index}
                     className="border-b border-slate-700/30 hover:bg-slate-700/30 transition-colors"
                   >
-                    <td className="py-3 px-2 text-gray-300">{score.heatNo}</td>
+                    <td className="py-3 px-2 text-gray-300">{score.heat_number}</td>
                     <td className="py-3 px-2 text-gray-300">{score.move}</td>
                     <td className="py-3 px-2 text-right font-semibold text-white">
                       {score.score.toFixed(2)} pts
@@ -155,12 +159,12 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                 </tr>
               </thead>
               <tbody>
-                {waveScores.map((score, index) => (
+                {wave_scores.map((score, index) => (
                   <tr
                     key={index}
                     className="border-b border-slate-700/30 hover:bg-slate-700/30 transition-colors"
                   >
-                    <td className="py-3 px-2 text-gray-300">{score.heatNo}</td>
+                    <td className="py-3 px-2 text-gray-300">{score.heat_number}</td>
                     <td className="py-3 px-2 text-right font-semibold text-white">
                       {score.score.toFixed(2)} pts
                     </td>
@@ -176,7 +180,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                       </span>
                     </td>
                     <td className="py-3 px-2 text-right text-gray-400">
-                      {score.index || '-'}
+                      {score.wave_index || '-'}
                     </td>
                   </tr>
                 ))}

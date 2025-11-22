@@ -9,13 +9,12 @@ import StatsSummaryCards from '../components/StatsSummaryCards';
 import EventStatsChart from '../components/EventStatsChart';
 import TopScoresTable from '../components/TopScoresTable';
 import AthleteStatsTab from '../components/AthleteStatsTab';
-import { dummyAthletes } from '../data/athleteStatsDummy';
 
 const EventResultsPage = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<'results' | 'event-stats' | 'athlete-stats'>('results');
   const [genderFilter, setGenderFilter] = useState<'all' | 'men' | 'women'>('women');
-  const [selectedAthleteId, setSelectedAthleteId] = useState<number>(1);
+  const [selectedAthleteId, setSelectedAthleteId] = useState<number | null>(null);
   const [defaultSet, setDefaultSet] = useState(false);
 
   const { data: event, isLoading, error } = useQuery({
@@ -48,7 +47,18 @@ const EventResultsPage = () => {
     retry: 1,
   });
 
-  // Set default gender filter based on available results (only on first load)
+  // Fetch athlete list for event
+  const { data: athleteListData, isLoading: athleteListLoading, error: athleteListError } = useQuery({
+    queryKey: ['eventAthletes', event?.id, genderFilter],
+    queryFn: () => apiService.getEventAthletes(
+      event!.id,
+      genderFilter === 'men' ? 'Men' : 'Women'
+    ),
+    enabled: !!event?.id && genderFilter !== 'all' && activeTab === 'athlete-stats',
+    retry: 1,
+  });
+
+  // Set default gender filter and selected athlete based on available results
   useEffect(() => {
     if (!defaultSet && resultsData?.results !== undefined && event?.event_id) {
       // If no results for women, check if men's results exist
@@ -59,6 +69,19 @@ const EventResultsPage = () => {
       setDefaultSet(true);
     }
   }, [resultsData, event?.event_id, defaultSet, genderFilter]);
+
+  // Reset selected athlete when gender filter or tab changes
+  useEffect(() => {
+    setSelectedAthleteId(null);
+  }, [genderFilter, activeTab]);
+
+  // Set default selected athlete when athlete list loads
+  useEffect(() => {
+    if (athleteListData?.athletes && athleteListData.athletes.length > 0 && selectedAthleteId === null) {
+      // Default to first athlete (winner)
+      setSelectedAthleteId(athleteListData.athletes[0].athlete_id);
+    }
+  }, [athleteListData, selectedAthleteId]);
 
   // Transform API response to component props format
   const transformedStatsData = statsData ? {
@@ -233,15 +256,22 @@ const EventResultsPage = () => {
                 <span className="text-gray-600">|</span>
                 <label className="text-sm font-medium text-gray-400">Athlete:</label>
                 <select
-                  value={selectedAthleteId}
+                  value={selectedAthleteId || ''}
                   onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
                   className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+                  disabled={athleteListLoading || !athleteListData?.athletes.length}
                 >
-                  {dummyAthletes.map((athlete) => (
-                    <option key={athlete.id} value={athlete.id}>
-                      {athlete.name} ({athlete.countryCode})
-                    </option>
-                  ))}
+                  {athleteListLoading ? (
+                    <option>Loading athletes...</option>
+                  ) : athleteListData?.athletes && athleteListData.athletes.length > 0 ? (
+                    athleteListData.athletes.map((athlete) => (
+                      <option key={athlete.athlete_id} value={athlete.athlete_id}>
+                        {athlete.overall_position}. {athlete.name} ({athlete.country_code})
+                      </option>
+                    ))
+                  ) : (
+                    <option>No athletes found</option>
+                  )}
                 </select>
               </>
             )}
@@ -323,7 +353,11 @@ const EventResultsPage = () => {
               )}
             </div>
           ) : (
-            <AthleteStatsTab selectedAthleteId={selectedAthleteId} />
+            <AthleteStatsTab
+              eventId={event?.id || 0}
+              selectedAthleteId={selectedAthleteId}
+              sex={genderFilter === 'men' ? 'Men' : 'Women'}
+            />
           )}
         </div>
       </section>
