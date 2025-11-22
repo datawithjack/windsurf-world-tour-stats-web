@@ -49,7 +49,7 @@ const EventResultsPage = () => {
   });
 
   // Fetch athlete list for event
-  const { data: athleteListData, isLoading: athleteListLoading, error: athleteListError } = useQuery({
+  const { data: athleteListData, isLoading: athleteListLoading } = useQuery({
     queryKey: ['eventAthletes', event?.id, genderFilter],
     queryFn: () => apiService.getEventAthletes(
       event!.id,
