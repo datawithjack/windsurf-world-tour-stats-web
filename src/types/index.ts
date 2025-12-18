@@ -202,19 +202,19 @@ export interface AthleteSummaryStats {
   best_heat_score: {
     score: number;
     heat: string;
-    opponents: string[] | null;
-  };
+    opponents?: string[] | null;
+  } | null;
   best_jump_score: {
     score: number;
     heat: string;
     move: string;
-    opponents: string[] | null;
-  };
+    opponents?: string[] | null;
+  } | null;
   best_wave_score: {
     score: number;
     heat: string;
-    opponents: string[] | null;
-  };
+    opponents?: string[] | null;
+  } | null;
 }
 
 export interface MoveTypeScore {

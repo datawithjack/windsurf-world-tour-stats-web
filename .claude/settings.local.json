@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git branch:*)",
+      "WebFetch(domain:windsurf-world-tour-stats-api.duckdns.org)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

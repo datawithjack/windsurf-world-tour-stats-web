@@ -31,12 +31,18 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
           <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Heat Score
           </h3>
-          <p className="text-5xl font-bold text-white mb-2">
-            {summary_stats.best_heat_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
-          </p>
-          <p className="text-xs text-gray-400">Heat {summary_stats.best_heat_score.heat}</p>
-          {summary_stats.best_heat_score.opponents && summary_stats.best_heat_score.opponents.length > 0 && (
-            <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_heat_score.opponents.join(', ')}</p>
+          {summary_stats.best_heat_score ? (
+            <>
+              <p className="text-5xl font-bold text-white mb-2">
+                {summary_stats.best_heat_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
+              </p>
+              <p className="text-xs text-gray-400">Heat {summary_stats.best_heat_score.heat}</p>
+              {summary_stats.best_heat_score.opponents && summary_stats.best_heat_score.opponents.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_heat_score.opponents.join(', ')}</p>
+              )}
+            </>
+          ) : (
+            <p className="text-xl text-gray-500">No data available</p>
           )}
         </div>
 
@@ -45,14 +51,20 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
           <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Jump Score
           </h3>
-          <p className="text-5xl font-bold text-white mb-2">
-            {summary_stats.best_jump_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
-          </p>
-          <p className="text-xs text-gray-400">Heat {summary_stats.best_jump_score.heat}</p>
-          {summary_stats.best_jump_score.opponents && summary_stats.best_jump_score.opponents.length > 0 && (
-            <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_jump_score.opponents.join(', ')}</p>
+          {summary_stats.best_jump_score ? (
+            <>
+              <p className="text-5xl font-bold text-white mb-2">
+                {summary_stats.best_jump_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
+              </p>
+              <p className="text-xs text-gray-400">Heat {summary_stats.best_jump_score.heat}</p>
+              {summary_stats.best_jump_score.opponents && summary_stats.best_jump_score.opponents.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_jump_score.opponents.join(', ')}</p>
+              )}
+              <p className="text-xs text-cyan-400 mt-1">{summary_stats.best_jump_score.move}</p>
+            </>
+          ) : (
+            <p className="text-xl text-gray-500">No data available</p>
           )}
-          <p className="text-xs text-cyan-400 mt-1">{summary_stats.best_jump_score.move}</p>
         </div>
 
         {/* Best Wave Score */}
@@ -60,12 +72,18 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
           <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Wave Score
           </h3>
-          <p className="text-5xl font-bold text-white mb-2">
-            {summary_stats.best_wave_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
-          </p>
-          <p className="text-xs text-gray-400">Heat {summary_stats.best_wave_score.heat}</p>
-          {summary_stats.best_wave_score.opponents && summary_stats.best_wave_score.opponents.length > 0 && (
-            <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_wave_score.opponents.join(', ')}</p>
+          {summary_stats.best_wave_score ? (
+            <>
+              <p className="text-5xl font-bold text-white mb-2">
+                {summary_stats.best_wave_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
+              </p>
+              <p className="text-xs text-gray-400">Heat {summary_stats.best_wave_score.heat}</p>
+              {summary_stats.best_wave_score.opponents && summary_stats.best_wave_score.opponents.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_wave_score.opponents.join(', ')}</p>
+              )}
+            </>
+          ) : (
+            <p className="text-xl text-gray-500">No data available</p>
           )}
         </div>
       </div>
