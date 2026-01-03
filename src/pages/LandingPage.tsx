@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Info } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import StatCounter from '../components/StatCounter';
 import { apiService } from '../services/api';
@@ -46,6 +46,18 @@ const LandingPage = () => {
                 Coming Soon: Athletes
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Informational Notice */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4 flex items-start gap-3">
+            <Info className="text-cyan-400 flex-shrink-0 mt-0.5" size={20} />
+            <p className="text-sm text-gray-300">
+              Right now the site only contains wave event data. Slalom and freestyle event data will get added later in 2026.
+            </p>
           </div>
         </div>
       </section>
