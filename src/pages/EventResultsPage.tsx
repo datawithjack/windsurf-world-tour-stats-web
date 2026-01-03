@@ -101,7 +101,7 @@ const EventResultsPage = () => {
         score: stat.best_scored_by.score,
       } : null,
     })) || [],
-    topHeatScores: statsData.top_heat_scores?.slice(0, 10).map(score => ({
+    topHeatScores: statsData.top_heat_scores?.slice(0, 10).map((score: any) => ({
       rider: score.athlete_name,
       score: score.score,
       heatNo: score.heat_number.toString(),
@@ -337,7 +337,7 @@ const EventResultsPage = () => {
                                 </tr>
                               </thead>
                               <tbody>
-                                {transformedStatsData.topHeatScores.slice(0, 10).map((entry, index) => (
+                                {transformedStatsData.topHeatScores.slice(0, 10).map((entry: any, index: number) => (
                                   <tr key={index} className="border-b border-slate-700/30 hover:bg-slate-800/40 transition-colors duration-200">
                                     <td className="py-3 px-4 text-sm text-gray-400 font-semibold">{index + 1}</td>
                                     <td className="py-3 px-4 text-sm text-white">{entry.rider}</td>

@@ -107,9 +107,17 @@ export interface AthleteResultsResponse {
 export interface BestScoreDetail {
   score: number;
   athlete_name: string;
-  athlete_id: number;
-  heat_number: number;
+  athlete_id: string;
+  heat_number: string;
   move_type?: string;
+  has_multiple_tied: boolean;
+  all_tied_scores: {
+    score: number;
+    athlete_name: string;
+    athlete_id: string;
+    heat_number: string;
+    move_type?: string;
+  }[] | null;
 }
 
 export interface MoveTypeStat {
@@ -143,6 +151,7 @@ export interface EventStatsResponse {
     best_wave_score: BestScoreDetail | null;
   };
   move_type_stats: MoveTypeStat[];
+  top_heat_scores: TopScore[];
   top_jump_scores: TopScore[];
   top_wave_scores: TopScore[];
   metadata: {
