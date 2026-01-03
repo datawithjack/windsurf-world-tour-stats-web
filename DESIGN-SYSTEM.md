@@ -4,6 +4,99 @@ Complete style guide and component library for the Windsurf World Tour Stats app
 
 ---
 
+## 🎯 Design Principles
+
+### Show, Don't Tell (Apple Approach)
+
+The interface should be self-explanatory through visual design rather than explicit labels. Let the UI communicate through layout, hierarchy, and intuitive controls.
+
+**Core Philosophy:**
+- Remove unnecessary instructional text
+- Let visual hierarchy guide the user
+- Make controls obvious through design, not labels
+- Trust users to understand intuitive UI patterns
+
+#### Examples
+
+**✅ DO - Show through design:**
+```jsx
+// Filter dropdowns positioned top-right without label
+<div className="flex items-center gap-3">
+  <select>
+    <option value="all">All Years</option>
+    <option value="2025">2025</option>
+  </select>
+  <select>
+    <option value="wave">Wave</option>
+  </select>
+</div>
+```
+
+**❌ DON'T - Tell with labels:**
+```jsx
+// Cluttered with unnecessary label text
+<div className="flex items-center gap-4">
+  <label>Filter by:</label>
+  <label>Year:</label>
+  <select>...</select>
+  <label>Event Type:</label>
+  <select>...</select>
+</div>
+```
+
+#### When to Apply
+
+**Remove labels when:**
+- UI pattern is universally understood (dropdowns, search boxes, toggles)
+- Visual positioning makes purpose clear (filters in top-right, search in header)
+- Control has self-describing options (dropdown shows "All Years" as first option)
+- Icon + placeholder text is sufficient context
+
+**Keep labels when:**
+- Form inputs require specific data (email, password, custom fields)
+- Accessibility requires explicit labeling (use aria-label if hiding visual label)
+- Control purpose isn't obvious from context alone
+- Legal/compliance requires explicit instruction
+
+#### Real-World Application
+
+**Events Page Filters:**
+- **Before:** "Filter by: Year: [dropdown] Event Type: [dropdown]"
+- **After:** Two dropdowns positioned top-right, options are self-describing
+- **Rationale:** Position (top-right) + dropdown content (All Years, Wave) communicates purpose
+
+**Search Inputs:**
+- **Before:** "Search for events" label above input
+- **After:** Placeholder text "Search events..." inside input with search icon
+- **Rationale:** Icon + placeholder provides sufficient context
+
+#### Implementation Checklist
+
+When designing UI controls:
+- [ ] Can positioning replace a label? (top-right = filters, top-left = navigation)
+- [ ] Do dropdown options explain the purpose? ("All Years" vs "Select...")
+- [ ] Does an icon make the action clear? (magnifying glass = search)
+- [ ] Is placeholder text sufficient? (vs external label)
+- [ ] Would removing the label create confusion? (keep it if yes)
+- [ ] Is the control standard/universal? (hamburger menu, shopping cart)
+
+#### Accessibility Considerations
+
+Always include accessibility labels even when hiding visual labels:
+
+```jsx
+<select
+  aria-label="Filter events by year"
+  className="..."
+>
+  <option value="all">All Years</option>
+</select>
+```
+
+**Remember:** Show don't tell applies to *visual* design. Accessibility labels are essential for screen readers.
+
+---
+
 ## 🎨 Brand Colors
 
 ### Primary Palette
