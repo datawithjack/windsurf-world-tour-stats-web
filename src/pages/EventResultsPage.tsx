@@ -87,22 +87,9 @@ const EventResultsPage = () => {
   // Transform API response to component props format
   const transformedStatsData = statsData ? {
     summaryCards: {
-      bestHeatScore: statsData.summary_stats?.best_heat_score ? {
-        score: statsData.summary_stats.best_heat_score.score,
-        athlete: statsData.summary_stats.best_heat_score.athlete_name,
-        heat: `Heat ${statsData.summary_stats.best_heat_score.heat_number}`,
-      } : null,
-      bestJumpScore: statsData.summary_stats?.best_jump_score ? {
-        score: statsData.summary_stats.best_jump_score.score,
-        athlete: statsData.summary_stats.best_jump_score.athlete_name,
-        heat: `Heat ${statsData.summary_stats.best_jump_score.heat_number}`,
-        move: statsData.summary_stats.best_jump_score.move_type || 'Unknown',
-      } : null,
-      bestWaveScore: statsData.summary_stats?.best_wave_score ? {
-        score: statsData.summary_stats.best_wave_score.score,
-        athlete: statsData.summary_stats.best_wave_score.athlete_name,
-        heat: `Heat ${statsData.summary_stats.best_wave_score.heat_number}`,
-      } : null,
+      bestHeatScore: statsData.summary_stats?.best_heat_score || null,
+      bestJumpScore: statsData.summary_stats?.best_jump_score || null,
+      bestWaveScore: statsData.summary_stats?.best_wave_score || null,
     },
     chartData: statsData.move_type_stats?.map(stat => ({
       type: stat.move_type,
@@ -114,7 +101,11 @@ const EventResultsPage = () => {
         score: stat.best_scored_by.score,
       } : null,
     })) || [],
-    topHeatScores: [] as { rider: string; score: number; heatNo: string }[], // Not available in API yet
+    topHeatScores: statsData.top_heat_scores?.slice(0, 10).map(score => ({
+      rider: score.athlete_name,
+      score: score.score,
+      heatNo: score.heat_number.toString(),
+    })) || [],
     topJumpScores: statsData.top_jump_scores?.slice(0, 10).map(score => ({
       rider: score.athlete_name,
       score: score.score,
