@@ -112,66 +112,56 @@ const HeadToHeadComparison: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Filters Section */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-400">Gender:</label>
-          <select
-            value={gender}
-            onChange={(e) => {
-              setGender(e.target.value as 'men' | 'women');
-              setAthlete1Id(null);
-              setAthlete2Id(null);
-            }}
-            className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
-          >
-            <option value="women">Women</option>
-            <option value="men">Men</option>
-          </select>
-        </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <select
+          value={gender}
+          onChange={(e) => {
+            setGender(e.target.value as 'men' | 'women');
+            setAthlete1Id(null);
+            setAthlete2Id(null);
+          }}
+          aria-label="Filter by gender"
+          className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+        >
+          <option value="women">Women</option>
+          <option value="men">Men</option>
+        </select>
 
-        <span className="text-gray-600">|</span>
+        <select
+          value={athlete1Id || ''}
+          onChange={(e) => setAthlete1Id(e.target.value ? Number(e.target.value) : null)}
+          aria-label="Select first athlete to compare"
+          className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm min-w-[250px]"
+        >
+          <option value="">Select first athlete</option>
+          {athletes.map((athlete) => (
+            <option
+              key={athlete.id}
+              value={athlete.id}
+              disabled={athlete.id === athlete2Id}
+            >
+              {athlete.name} ({athlete.countryCode})
+            </option>
+          ))}
+        </select>
 
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-400">Athlete 1:</label>
-          <select
-            value={athlete1Id || ''}
-            onChange={(e) => setAthlete1Id(e.target.value ? Number(e.target.value) : null)}
-            className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm min-w-[250px]"
-          >
-            <option value="">Select first athlete</option>
-            {athletes.map((athlete) => (
-              <option
-                key={athlete.id}
-                value={athlete.id}
-                disabled={athlete.id === athlete2Id}
-              >
-                {athlete.name} ({athlete.countryCode})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <span className="text-gray-600">|</span>
-
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-400">Athlete 2:</label>
-          <select
-            value={athlete2Id || ''}
-            onChange={(e) => setAthlete2Id(e.target.value ? Number(e.target.value) : null)}
-            className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm min-w-[250px]"
-          >
-            <option value="">Select second athlete</option>
-            {athletes.map((athlete) => (
-              <option
-                key={athlete.id}
-                value={athlete.id}
-                disabled={athlete.id === athlete1Id}
-              >
-                {athlete.name} ({athlete.countryCode})
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={athlete2Id || ''}
+          onChange={(e) => setAthlete2Id(e.target.value ? Number(e.target.value) : null)}
+          aria-label="Select second athlete to compare"
+          className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm min-w-[250px]"
+        >
+          <option value="">Select second athlete</option>
+          {athletes.map((athlete) => (
+            <option
+              key={athlete.id}
+              value={athlete.id}
+              disabled={athlete.id === athlete1Id}
+            >
+              {athlete.name} ({athlete.countryCode})
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Comparison Container */}
