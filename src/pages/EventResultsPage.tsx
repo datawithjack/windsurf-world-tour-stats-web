@@ -296,21 +296,13 @@ const EventResultsPage = () => {
       <section className="px-4 sm:px-6 lg:px-8 py-6 pb-20">
         <div className="max-w-7xl mx-auto">
           {activeTab === 'results' ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="max-w-4xl">
               {/* Final Rankings Card */}
               <FeatureCard title="Final Rankings" isLoading={resultsLoading}>
                 <ResultsTable
                   results={resultsData?.results || []}
                   isLoading={resultsLoading}
                 />
-              </FeatureCard>
-
-              {/* Elimination Ladder Card */}
-              <FeatureCard title="Elimination Ladder" isLoading={false}>
-                <div className="text-gray-400 text-center py-12">
-                  <p className="text-lg mb-2">TBC</p>
-                  <p className="text-sm text-gray-500">Elimination bracket will be displayed here</p>
-                </div>
               </FeatureCard>
             </div>
           ) : activeTab === 'event-stats' ? (
