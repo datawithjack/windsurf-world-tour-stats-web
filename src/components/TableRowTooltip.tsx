@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { ReactNode } from 'react';
 
 interface TableRowTooltipProps {
@@ -12,19 +13,17 @@ const TableRowTooltip = ({ children, content, className = '' }: TableRowTooltipP
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleMouseEnter = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
     setPosition({
       x: e.clientX,
-      y: rect.top - 10, // Position above the row
+      y: e.clientY,
     });
     setIsVisible(true);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
     setPosition({
       x: e.clientX,
-      y: rect.top - 10,
+      y: e.clientY,
     });
   };
 
@@ -42,17 +41,17 @@ const TableRowTooltip = ({ children, content, className = '' }: TableRowTooltipP
       >
         {children}
       </tr>
-      {isVisible && (
+      {isVisible && createPortal(
         <div
-          className="fixed z-50 bg-slate-800/95 backdrop-blur-sm border border-slate-700/50 rounded-lg px-3 py-2 shadow-lg pointer-events-none"
+          className="fixed z-50 bg-slate-800/95 backdrop-blur-sm border border-cyan-500/50 rounded-lg px-3 py-2 shadow-lg pointer-events-none"
           style={{
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-            transform: 'translate(-50%, -100%)',
+            left: `${position.x + 10}px`,
+            top: `${position.y - 35}px`,
           }}
         >
           <p className="text-xs text-gray-300 whitespace-nowrap">{content}</p>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

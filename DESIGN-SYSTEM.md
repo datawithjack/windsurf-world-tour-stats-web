@@ -426,12 +426,20 @@ import TableRowTooltip from '@/components/TableRowTooltip';
 
 **Styling:**
 - Frosted glass background: `bg-slate-800/95 backdrop-blur-sm`
-- Border: `border border-slate-700/50`
+- Border: `border border-cyan-500/50` (cyan accent for tooltips)
 - Rounded corners: `rounded-lg`
 - Padding: `px-3 py-2`
 - Shadow: `shadow-lg`
 - Text: `text-xs text-gray-300 whitespace-nowrap`
-- Positioning: Fixed, follows mouse horizontally, centered above row
+- Positioning: Fixed, follows mouse cursor (10px right, 35px above)
+- Z-index: `z-50` (ensures tooltip appears above all content)
+- Pointer events: `pointer-events-none` (tooltip doesn't interfere with mouse)
+
+**Implementation Details:**
+- Uses React Portal (`createPortal`) to render tooltip at document body level
+- Tracks mouse position with `clientX` and `clientY` for accurate positioning
+- Updates position on `onMouseMove` for smooth cursor tracking
+- Small offset (10px right, 35px up) prevents tooltip from blocking content
 
 **Use Cases:**
 - Showing heat numbers in score tables without dedicating a column
@@ -440,7 +448,7 @@ import TableRowTooltip from '@/components/TableRowTooltip';
 - Any scenario where supplementary info shouldn't be always visible
 
 **Design Philosophy:**
-Follows "Show, Don't Tell" - hide non-essential data by default, reveal on interaction. Maintains consistent frosted glass aesthetic with rest of application.
+Follows "Show, Don't Tell" - hide non-essential data by default, reveal on interaction. Maintains consistent frosted glass aesthetic with cyan accent border to match interactive elements.
 
 ### Stat Cards (Data Visualization)
 For displaying individual metrics and statistics.
