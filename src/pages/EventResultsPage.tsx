@@ -7,9 +7,9 @@ import FeatureCard from '../components/FeatureCard';
 import ResultsTable from '../components/ResultsTable';
 import StatsSummaryCards from '../components/StatsSummaryCards';
 import EventStatsChart from '../components/EventStatsChart';
-import TopScoresTable from '../components/TopScoresTable';
 import AthleteStatsTab from '../components/AthleteStatsTab';
 import HeadToHeadComparison from '../components/HeadToHeadComparison';
+import TableRowTooltip from '../components/TableRowTooltip';
 
 const EventResultsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -108,13 +108,13 @@ const EventResultsPage = () => {
       type: stat.move_type,
       best: stat.best_score,
       average: stat.average_score,
-      bestBy: stat.best_by ? {
-        athlete: stat.best_by.athlete_name,
-        heat: stat.best_by.heat_number.toString(),
-        score: stat.best_by.score,
-      } : { athlete: '', heat: '', score: 0 },
+      bestBy: stat.best_scored_by ? {
+        athlete: stat.best_scored_by.athlete_name,
+        heat: stat.best_scored_by.heat_number.toString(),
+        score: stat.best_scored_by.score,
+      } : null,
     })) || [],
-    topHeatScores: [], // Not available in API yet
+    topHeatScores: [] as { rider: string; score: number; heatNo: string }[], // Not available in API yet
     topJumpScores: statsData.top_jump_scores?.slice(0, 10).map(score => ({
       rider: score.athlete_name,
       score: score.score,
@@ -251,11 +251,11 @@ const EventResultsPage = () => {
       {activeTab !== 'head-to-head' && (
         <section className="px-4 sm:px-6 lg:px-8 py-4 pb-2">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-4 flex-wrap">
-              <label className="text-sm font-medium text-gray-400">Filter by:</label>
+            <div className="flex items-center gap-3 flex-wrap">
               <select
                 value={genderFilter}
                 onChange={(e) => setGenderFilter(e.target.value as 'all' | 'men' | 'women')}
+                aria-label="Filter by gender"
                 className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
               >
                 <option value="men">Men</option>
@@ -264,28 +264,25 @@ const EventResultsPage = () => {
 
               {/* Athlete Filter - only show on Athlete Stats tab */}
               {activeTab === 'athlete-stats' && (
-                <>
-                  <span className="text-gray-600">|</span>
-                  <label className="text-sm font-medium text-gray-400">Athlete:</label>
-                  <select
-                    value={selectedAthleteId || ''}
-                    onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
-                    className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
-                    disabled={athleteListLoading || !athleteListData?.athletes.length}
-                  >
-                    {athleteListLoading ? (
-                      <option>Loading athletes...</option>
-                    ) : athleteListData?.athletes && athleteListData.athletes.length > 0 ? (
-                      athleteListData.athletes.map((athlete) => (
-                        <option key={athlete.athlete_id} value={athlete.athlete_id}>
-                          {athlete.overall_position}. {athlete.name} ({athlete.country_code})
-                        </option>
-                      ))
-                    ) : (
-                      <option>No athletes found</option>
-                    )}
-                  </select>
-                </>
+                <select
+                  value={selectedAthleteId || ''}
+                  onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
+                  aria-label="Select athlete"
+                  className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+                  disabled={athleteListLoading || !athleteListData?.athletes.length}
+                >
+                  {athleteListLoading ? (
+                    <option>Loading athletes...</option>
+                  ) : athleteListData?.athletes && athleteListData.athletes.length > 0 ? (
+                    athleteListData.athletes.map((athlete) => (
+                      <option key={athlete.athlete_id} value={athlete.athlete_id}>
+                        {athlete.overall_position}. {athlete.name} ({athlete.country_code})
+                      </option>
+                    ))
+                  ) : (
+                    <option>No athletes found</option>
+                  )}
+                </select>
               )}
             </div>
           </div>
@@ -327,23 +324,114 @@ const EventResultsPage = () => {
                     />
                   )}
 
-                  {/* Bar Chart - only render if data exists */}
+                  {/* Bar Chart and Top Heat Scores side-by-side on desktop */}
                   {transformedStatsData.chartData.length > 0 && (
-                    <FeatureCard title="Best and Average Counting Score by Type" isLoading={false}>
-                      <EventStatsChart data={transformedStatsData.chartData} />
-                    </FeatureCard>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Bar Chart */}
+                      <FeatureCard title="Best and Average Counting Score by Type" isLoading={false}>
+                        <EventStatsChart data={transformedStatsData.chartData} />
+                      </FeatureCard>
+
+                      {/* Top Heat Scores - Note: Empty until backend provides data */}
+                      <FeatureCard title="Top Heat Scores (Top 10)" isLoading={false}>
+                        {transformedStatsData.topHeatScores.length > 0 ? (
+                          <div className="overflow-x-auto">
+                            <table className="w-full">
+                              <thead>
+                                <tr className="border-b border-slate-700/50">
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">#</th>
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">Rider</th>
+                                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">Score</th>
+                                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">Heat No</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {transformedStatsData.topHeatScores.slice(0, 10).map((entry, index) => (
+                                  <tr key={index} className="border-b border-slate-700/30 hover:bg-slate-800/40 transition-colors duration-200">
+                                    <td className="py-3 px-4 text-sm text-gray-400 font-semibold">{index + 1}</td>
+                                    <td className="py-3 px-4 text-sm text-white">{entry.rider}</td>
+                                    <td className="py-3 px-4 text-sm text-right text-white font-semibold">{entry.score.toFixed(2)}</td>
+                                    <td className="py-3 px-4 text-sm text-right text-gray-400">{entry.heatNo}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <div className="text-gray-400 text-center py-12">
+                            <p className="text-sm text-gray-500">Heat scores data not available from API</p>
+                          </div>
+                        )}
+                      </FeatureCard>
+                    </div>
                   )}
 
-                  {/* Top Scores Tables - only render if at least one table has data */}
-                  {(transformedStatsData.topHeatScores.length > 0 ||
-                    transformedStatsData.topJumpScores.length > 0 ||
+                  {/* Top Jump and Wave Scores - only render if data exists */}
+                  {(transformedStatsData.topJumpScores.length > 0 ||
                     transformedStatsData.topWaveScores.length > 0) && (
-                    <TopScoresTable
-                      topHeatScores={transformedStatsData.topHeatScores}
-                      topJumpScores={transformedStatsData.topJumpScores}
-                      topWaveScores={transformedStatsData.topWaveScores}
-                      isLoading={false}
-                    />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Top Jump Scores */}
+                      {transformedStatsData.topJumpScores.length > 0 && (
+                        <FeatureCard title="Top Jump Scores (Top 10)" isLoading={false}>
+                          <div className="overflow-x-auto">
+                            <table className="w-full">
+                              <thead>
+                                <tr className="border-b border-slate-700/50">
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">#</th>
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">Rider</th>
+                                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">Score</th>
+                                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">Move</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {transformedStatsData.topJumpScores.slice(0, 10).map((entry, index) => (
+                                  <TableRowTooltip
+                                    key={index}
+                                    content={`Heat ${entry.heatNo}`}
+                                    className="border-b border-slate-700/30 hover:bg-slate-800/40 transition-colors duration-200 cursor-help"
+                                  >
+                                    <td className="py-3 px-4 text-sm text-gray-400 font-semibold">{index + 1}</td>
+                                    <td className="py-3 px-4 text-sm text-white">{entry.rider}</td>
+                                    <td className="py-3 px-4 text-sm text-right text-white font-semibold">{entry.score.toFixed(2)}</td>
+                                    <td className="py-3 px-4 text-sm text-right text-gray-400">{entry.move}</td>
+                                  </TableRowTooltip>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </FeatureCard>
+                      )}
+
+                      {/* Top Wave Scores */}
+                      {transformedStatsData.topWaveScores.length > 0 && (
+                        <FeatureCard title="Top Wave Scores (Top 10)" isLoading={false}>
+                          <div className="overflow-x-auto">
+                            <table className="w-full">
+                              <thead>
+                                <tr className="border-b border-slate-700/50">
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">#</th>
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">Rider</th>
+                                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">Score</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {transformedStatsData.topWaveScores.slice(0, 10).map((entry, index) => (
+                                  <TableRowTooltip
+                                    key={index}
+                                    content={`Heat ${entry.heatNo}`}
+                                    className="border-b border-slate-700/30 hover:bg-slate-800/40 transition-colors duration-200 cursor-help"
+                                  >
+                                    <td className="py-3 px-4 text-sm text-gray-400 font-semibold">{index + 1}</td>
+                                    <td className="py-3 px-4 text-sm text-white">{entry.rider}</td>
+                                    <td className="py-3 px-4 text-sm text-right text-white font-semibold">{entry.score.toFixed(2)}</td>
+                                  </TableRowTooltip>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </FeatureCard>
+                      )}
+                    </div>
                   )}
                 </>
               ) : (

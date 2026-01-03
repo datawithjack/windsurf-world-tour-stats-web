@@ -396,6 +396,52 @@ import FeatureCard from '@/components/FeatureCard';
 </FeatureCard>
 ```
 
+### TableRowTooltip
+Styled tooltip component for table rows that matches the frosted glass design system.
+
+```jsx
+import TableRowTooltip from '@/components/TableRowTooltip';
+
+<table>
+  <tbody>
+    {data.map((entry, index) => (
+      <TableRowTooltip
+        key={index}
+        content={`Heat ${entry.heatNo}`}
+        className="border-b border-slate-700/30 hover:bg-slate-800/40 transition-colors duration-200 cursor-help"
+      >
+        <td>{entry.rank}</td>
+        <td>{entry.rider}</td>
+        <td>{entry.score}</td>
+      </TableRowTooltip>
+    ))}
+  </tbody>
+</table>
+```
+
+**Props:**
+- `children` (required): Table row cells (`<td>` elements)
+- `content` (required): Tooltip text to display on hover
+- `className` (optional): CSS classes for the table row
+
+**Styling:**
+- Frosted glass background: `bg-slate-800/95 backdrop-blur-sm`
+- Border: `border border-slate-700/50`
+- Rounded corners: `rounded-lg`
+- Padding: `px-3 py-2`
+- Shadow: `shadow-lg`
+- Text: `text-xs text-gray-300 whitespace-nowrap`
+- Positioning: Fixed, follows mouse horizontally, centered above row
+
+**Use Cases:**
+- Showing heat numbers in score tables without dedicating a column
+- Displaying additional context on hover (timestamps, IDs, metadata)
+- Reducing table clutter while maintaining accessibility
+- Any scenario where supplementary info shouldn't be always visible
+
+**Design Philosophy:**
+Follows "Show, Don't Tell" - hide non-essential data by default, reveal on interaction. Maintains consistent frosted glass aesthetic with rest of application.
+
 ### Stat Cards (Data Visualization)
 For displaying individual metrics and statistics.
 

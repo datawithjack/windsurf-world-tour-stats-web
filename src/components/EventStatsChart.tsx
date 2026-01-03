@@ -13,11 +13,11 @@ interface MoveTypeData {
   type: string;
   best: number;
   average: number;
-  bestBy?: {
+  bestBy: {
     athlete: string;
     heat: string;
     score: number;
-  };
+  } | null;
 }
 
 interface EventStatsChartProps {
@@ -35,7 +35,7 @@ const CustomTooltip = (props: any) => {
     return (
       <div className="bg-slate-800/95 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 shadow-lg">
         <p className="font-semibold text-white mb-2">{label}</p>
-        {isBest && data.bestBy ? (
+        {isBest && data.bestBy !== null ? (
           <>
             <p className="text-sm text-teal-400 mb-1">
               Best: {data.best.toFixed(2)} pts
@@ -86,14 +86,14 @@ const EventStatsChart = ({ data }: EventStatsChartProps) => {
           <XAxis
             type="number"
             stroke="#9ca3af"
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: '14px', fontWeight: 500 }}
             domain={[0, 'auto']}
           />
           <YAxis
             type="category"
             dataKey="type"
             stroke="#9ca3af"
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: '14px', fontWeight: 600 }}
             width={90}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(45, 212, 191, 0.1)' }} />

@@ -116,10 +116,10 @@ export interface MoveTypeStat {
   move_type: string;
   best_score: number;
   average_score: number;
-  best_by: {
+  best_scored_by: {
     athlete_name: string;
-    athlete_id: number;
-    heat_number: number;
+    athlete_id: string;
+    heat_number: string;
     score: number;
   };
 }

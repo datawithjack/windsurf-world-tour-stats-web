@@ -647,6 +647,279 @@ The API endpoint is ready for frontend integration when:
 
 ---
 
+## Known API Issues (Current Implementation)
+
+**Last Updated:** 2026-01-03
+
+### Issue 1: `best_heat_score` Returns `null`
+
+**Status:** 🔴 Critical
+**Endpoint:** `GET /api/v1/events/{event_id}/stats`
+**Field:** `summary_stats.best_heat_score`
+
+**Problem:**
+```json
+{
+  "summary_stats": {
+    "best_heat_score": null,  ← Always null
+    "best_jump_score": { ... },  ← Works fine
+    "best_wave_score": { ... }   ← Works fine
+  }
+}
+```
+
+**Expected Behavior:**
+Should return the highest total heat score:
+```json
+"best_heat_score": {
+  "score": 24.50,
+  "athlete_name": "Degrieck",
+  "athlete_id": 456,
+  "heat_number": "21a"
+}
+```
+
+**Impact:**
+- "Best Heat Score" summary card never displays on frontend
+- Users cannot see best overall performance
+
+**Fix Required:**
+Backend needs to calculate `MAX(total_heat_score)` and return athlete/heat details.
+
+---
+
+### Issue 2: `top_heat_scores` Returns Empty Array
+
+**Status:** 🔴 Critical
+**Endpoint:** `GET /api/v1/events/{event_id}/stats`
+**Field:** `top_heat_scores`
+
+**Problem:**
+```json
+{
+  "top_heat_scores": [],  ← Always empty array
+  "top_jump_scores": [...],  ← Populated correctly
+  "top_wave_scores": [...]   ← Populated correctly
+}
+```
+
+**Expected Behavior:**
+Should return ALL heat total scores sorted descending:
+```json
+"top_heat_scores": [
+  {
+    "rank": 1,
+    "athlete_name": "Degrieck",
+    "athlete_id": 456,
+    "score": 24.50,
+    "heat_number": "21a"
+  },
+  {
+    "rank": 2,
+    "athlete_name": "Offringa",
+    "athlete_id": 321,
+    "score": 23.95,
+    "heat_number": "49a"
+  },
+  // ... ALL heat scores
+]
+```
+
+**Impact:**
+- "Top Heat Scores" table shows "Heat scores data not available from API" message
+- Cannot display leaderboard of best heat performances
+- Side-by-side layout with bar chart has empty right panel
+
+**Fix Required:**
+Backend needs to query all heat_results and return sorted by total_score DESC.
+
+---
+
+### Issue 3: `best_by` Field Name Inconsistency
+
+**Status:** ✅ Resolved (2026-01-03)
+**Endpoint:** `GET /api/v1/events/{event_id}/stats`
+**Field:** `move_type_stats[].best_scored_by`
+
+**Resolution:**
+API correctly uses `best_scored_by` matching the specification. Frontend types and data transformation updated to use `best_scored_by`.
+
+**Changes Made:**
+- Updated `MoveTypeStat` interface in `src/types/index.ts` to use `best_scored_by`
+- Updated data transformation in `EventResultsPage.tsx` to read `stat.best_scored_by`
+- Bar chart tooltip now correctly displays athlete name and heat number
+
+---
+
+### Issue 4: Multiple Athletes with Same Best Score Not Indicated
+
+**Status:** 🟡 Medium
+**Endpoint:** `GET /api/v1/events/{event_id}/stats`
+**Field:** `move_type_stats[].best_by`
+
+**Problem:**
+When multiple athletes achieve the same best score (e.g., three athletes with 10.0), the API only returns one:
+
+```json
+{
+  "move_type": "Pushloop Forward",
+  "best_score": 10.0,
+  "best_by": {
+    "athlete_name": "Marcilio Browne",  ← Only shows one
+    "heat_number": "1830_48a",
+    "score": 10.0
+  }
+}
+```
+
+**Reality from `top_jump_scores`:**
+```json
+"top_jump_scores": [
+  { "rank": 1, "athlete_name": "Marcilio Browne", "score": 10.0, "move_type": "Pushloop Forward" },
+  { "rank": 2, "athlete_name": "Marino Gil Gherardi", "score": 10.0, "move_type": "Pushloop Forward" },
+  { "rank": 3, "athlete_name": "Philip Köster", "score": 10.0, "move_type": "Pushloop Forward" },
+  // ... 3 athletes tied at 10.0!
+]
+```
+
+**Expected Behavior (Option A):**
+Return all tied athletes:
+```json
+"best_by": [
+  { "athlete_name": "Marcilio Browne", "heat_number": "1830_48a", "score": 10.0 },
+  { "athlete_name": "Marino Gil Gherardi", "heat_number": "1830_48a", "score": 10.0 },
+  { "athlete_name": "Philip Köster", "heat_number": "1830_50a", "score": 10.0 }
+]
+```
+
+**Expected Behavior (Option B - Simpler):**
+Add a tied count field:
+```json
+"best_by": {
+  "athlete_name": "Marcilio Browne",
+  "heat_number": "1830_48a",
+  "score": 10.0,
+  "tied_count": 3  ← New field indicating 3 athletes share this score
+}
+```
+
+**Impact:**
+- Bar chart tooltip shows incomplete information
+- Users don't know if multiple athletes achieved the same best score
+- Misleading display when ties exist
+
+**Example Affected:**
+Event 12 (2025 Gran Canaria), Men's division:
+- Pushloop Forward: 3 athletes with 10.0
+- Only "Marcilio Browne" shown in chart tooltip
+
+**Fix Required:**
+Backend should either:
+- Count tied athletes and add `tied_count` field (Option B - recommended)
+- Return array of all tied athletes (Option A)
+
+---
+
+### Issue 5: Bar Chart Tooltip Not Displaying Athlete/Heat Info
+
+**Status:** ✅ Resolved (2026-01-03)
+**Component:** `EventStatsChart.tsx` and `EventResultsPage.tsx`
+**Root Cause:** Field name mismatch - frontend using `best_by`, API returning `best_scored_by`
+
+**Problem:**
+When hovering over "Best Score" (teal) bars in the bar chart, tooltip showed:
+- Move type ✓
+- Score ✓
+- "Heat" label ✗ (shows label but no heat number)
+- Athlete name ✗ (missing entirely)
+
+**Root Cause:**
+Frontend code was looking for `stat.best_by` but API correctly returns `stat.best_scored_by` per specification.
+
+**Resolution:**
+1. Updated `MoveTypeStat` interface to use `best_scored_by` instead of `best_by`
+2. Updated data transformation in `EventResultsPage.tsx` to read `stat.best_scored_by`
+3. Updated `EventStatsChart.tsx` tooltip to use `data.bestBy !== null` check
+4. Added comprehensive debug logging to both components
+
+**Changes Made:**
+- `src/types/index.ts`: Changed `best_by` → `best_scored_by` in MoveTypeStat interface
+- `src/pages/EventResultsPage.tsx`: Updated data transformation to use `best_scored_by`
+- `src/components/EventStatsChart.tsx`: Improved tooltip null checking
+
+**Tooltip Now Displays:**
+```
+Backloop
+Best: 5.50 pts
+Pauline Katz
+Heat 1904_14a
+```
+
+---
+
+## Additional Frontend Improvements (2026-01-03)
+
+### Top Jump/Wave Scores Tables - Tooltip Enhancement
+
+**Change:** Removed "Heat No" column and added hover tooltips
+
+**Before:**
+- Tables had 4 columns including visible "Heat No" column
+- Cluttered display with redundant information
+
+**After:**
+- Jump scores: 4 columns → 3 columns (# | Rider | Score | Move)
+- Wave scores: 4 columns → 3 columns (# | Rider | Score)
+- Hover over any row to see heat number in tooltip
+- Added `cursor-help` to indicate tooltip availability
+
+**Implementation:**
+- Added `title={Heat ${entry.heatNo}}` attribute to table rows
+- Added `cursor-help` CSS class for visual feedback
+- Cleaner, more compact table layout
+
+**Files Changed:**
+- `src/pages/EventResultsPage.tsx` (lines 387-447)
+
+---
+
+**Investigation Notes (Kept for Reference):**
+- Check if `stat.best_by` exists in API response
+- Verify data transformation correctly maps `athlete_name` → `athlete`
+- Confirm tooltip receives populated `data.bestBy` object
+
+**Temporary Workaround:**
+Add defensive null checking and fallback text in tooltip:
+```typescript
+<p className="text-xs text-gray-400">
+  {data.bestBy?.athlete || 'Unknown'}
+</p>
+<p className="text-xs text-gray-400">
+  Heat {data.bestBy?.heat || 'N/A'}
+</p>
+```
+
+---
+
+## API Issues Summary
+
+| Issue | Severity | Status | Frontend Impact |
+|-------|----------|--------|-----------------|
+| `best_heat_score` always null | 🔴 Critical | Needs backend fix | Summary card hidden |
+| `top_heat_scores` empty array | 🔴 Critical | Needs backend fix | Table shows "no data" |
+| `best_by` vs `best_scored_by` | 🟡 Medium | Working, needs doc update | None (adapted) |
+| Tied scores not indicated | 🟡 Medium | Needs backend enhancement | Incomplete info |
+| Tooltip not showing data | 🔴 Critical | Investigating | Poor UX |
+
+**Priority Fix Order:**
+1. Fix `best_heat_score` calculation (Issue #1)
+2. Populate `top_heat_scores` array (Issue #2)
+3. Fix tooltip display (Issue #5)
+4. Add tied score indicator (Issue #4)
+5. Update spec naming (Issue #3)
+
+---
+
 ## Questions?
 
 Contact frontend developer if clarification needed on:
