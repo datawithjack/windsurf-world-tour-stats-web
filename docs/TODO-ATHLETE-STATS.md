@@ -9,16 +9,34 @@
 
 ## ⚠️ Known Issues
 
-### 1. UI/Layout Issues
-**Status:** Needs fixing
-**Description:** There are visual/layout issues with the athlete stats view that need to be addressed.
+### 1. Tab Navigation Horizontal Scrollbar Issue
+**Status:** 🔴 Needs fixing
+**Description:** Horizontal scrollbar appears on the tab navigation (RESULTS, EVENT STATS, ATHLETE STATS, HEAD TO HEAD) when viewing the Athlete Stats tab.
+
+**Screenshot:** `c:\Users\jackf\OneDrive\Pictures\Screenshots\Screenshot 2026-01-03 161825.png`
+
+**Action Required:**
+- Fix overflow issue in tab navigation container (EventResultsPage.tsx lines 201-245)
+- Ensure tabs fit within viewport without horizontal scroll
+- Consider making tab text smaller or using abbreviations on mobile
+- Test tab navigation responsiveness across different screen sizes
+
+**Possible Solutions:**
+- Remove `overflow-x-auto` from tab container
+- Add proper responsive text sizing for tab labels
+- Consider stacking tabs vertically on mobile
+- Use CSS to prevent horizontal overflow
+
+### 2. UI/Layout Issues (General)
+**Status:** Needs review
+**Description:** Other visual/layout issues with the athlete stats view that need to be addressed.
 
 **Action Required:**
 - Review and fix layout/styling issues in AthleteStatsTab component
 - Test responsive design on different screen sizes
 - Verify chart rendering and data display
 
-### 2. API Data Quality
+### 3. API Data Quality
 **Status:** Backend dependency
 **Description:** The API returns data but some fields may be incomplete:
 - All athletes showing `0 total_heats` and `0.0 best_heat_score` in the athlete list
@@ -29,7 +47,7 @@
 - Check if this is test data vs. real competition data
 - Confirm which events have complete heat/stats data
 
-### 3. Profile Images
+### 4. Profile Images
 **Status:** Minor enhancement
 **Description:** Profile images are returned as URLs but may not all be available
 
@@ -37,7 +55,7 @@
 - Test image loading and add proper fallback handling
 - Consider adding lazy loading for images
 
-### 4. Error Handling
+### 5. Error Handling
 **Status:** Enhancement
 **Description:** Better error messages when API data is unavailable
 
