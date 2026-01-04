@@ -193,7 +193,7 @@ const EventResultsPage = () => {
       {/* Tab Navigation */}
       <section className="px-4 sm:px-6 lg:px-8 py-4 border-b border-slate-700/50">
         <div className="max-w-7xl mx-auto">
-          <div className="flex gap-1 overflow-x-auto">
+          <div className="flex gap-1 overflow-x-auto scrollbar-hide">
             <button
               onClick={() => setActiveTab('results')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${

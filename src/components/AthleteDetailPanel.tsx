@@ -22,6 +22,31 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
     },
   })) || [];
 
+  // Sort heat scores by round progression
+  const getRoundOrder = (roundName: string): number => {
+    const lowerRound = roundName.toLowerCase();
+
+    // Handle special rounds
+    if (lowerRound.includes('final')) {
+      if (lowerRound.includes('quarter')) return 900;
+      if (lowerRound.includes('semi')) return 950;
+      if (lowerRound === 'final' || lowerRound === 'finals') return 1000;
+    }
+
+    // Extract round number for "Round X" format
+    const roundMatch = roundName.match(/round\s*(\d+)/i);
+    if (roundMatch) {
+      return parseInt(roundMatch[1], 10);
+    }
+
+    // Default fallback
+    return 0;
+  };
+
+  const sortedHeatScores = heat_scores ? [...heat_scores].sort((a, b) => {
+    return getRoundOrder(a.round_name) - getRoundOrder(b.round_name);
+  }) : [];
+
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
@@ -97,11 +122,11 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
 
         {/* Heat Scores */}
         <FeatureCard title="Heat Scores" isLoading={false}>
-          <AthleteHeatScoresChart data={heat_scores?.map(h => ({
+          <AthleteHeatScoresChart data={sortedHeatScores.map(h => ({
             roundName: h.round_name,
             score: h.score,
             type: h.elimination_type
-          })) || []} />
+          }))} />
         </FeatureCard>
       </div>
 
@@ -171,9 +196,6 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                   <th className="text-center py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">
                     Counting
                   </th>
-                  <th className="text-right py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                    Index
-                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -196,9 +218,6 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                       >
                         {score.counting ? 'Yes' : 'No'}
                       </span>
-                    </td>
-                    <td className="py-3 px-2 text-right text-gray-400">
-                      {score.wave_index || '-'}
                     </td>
                   </tr>
                 ))}
