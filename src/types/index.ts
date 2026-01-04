@@ -211,17 +211,20 @@ export interface AthleteSummaryStats {
   best_heat_score: {
     score: number;
     heat: string;
+    round_name: string;
     opponents?: string[] | null;
   } | null;
   best_jump_score: {
     score: number;
     heat: string;
+    round_name: string;
     move: string;
     opponents?: string[] | null;
   } | null;
   best_wave_score: {
     score: number;
     heat: string;
+    round_name: string;
     opponents?: string[] | null;
   } | null;
 }
@@ -234,12 +237,14 @@ export interface MoveTypeScore {
 
 export interface HeatScore {
   heat_number: string;
+  round_name: string;
   score: number;
   elimination_type: 'Single' | 'Double';
 }
 
 export interface JumpScore {
   heat_number: string;
+  round_name: string;
   move: string;
   score: number;
   counting: boolean;
@@ -247,6 +252,7 @@ export interface JumpScore {
 
 export interface WaveScore {
   heat_number: string;
+  round_name: string;
   score: number;
   counting: boolean;
   wave_index?: number;

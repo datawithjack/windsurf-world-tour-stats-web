@@ -11,16 +11,16 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
   const { summary_stats, move_type_scores, heat_scores, jump_scores, wave_scores } = data;
 
   // Transform move type scores for EventStatsChart
-  const chartData = move_type_scores.map(score => ({
+  const chartData = move_type_scores?.map(score => ({
     type: score.move_type,
     best: score.best_score,
     average: score.average_score,
     bestBy: {
-      athlete: data.profile.name,
+      athlete: data.profile?.name || '',
       heat: '',
       score: score.best_score,
     },
-  }));
+  })) || [];
 
   return (
     <div className="space-y-6">
@@ -36,8 +36,8 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
               <p className="text-5xl font-bold text-white mb-2">
                 {summary_stats.best_heat_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
               </p>
-              <p className="text-xs text-gray-400">Heat {summary_stats.best_heat_score.heat}</p>
-              {summary_stats.best_heat_score.opponents && summary_stats.best_heat_score.opponents.length > 0 && (
+              <p className="text-xs text-gray-400">{summary_stats.best_heat_score.round_name}</p>
+              {summary_stats.best_heat_score.opponents && Array.isArray(summary_stats.best_heat_score.opponents) && summary_stats.best_heat_score.opponents.length > 0 && (
                 <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_heat_score.opponents.join(', ')}</p>
               )}
             </>
@@ -56,8 +56,8 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
               <p className="text-5xl font-bold text-white mb-2">
                 {summary_stats.best_jump_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
               </p>
-              <p className="text-xs text-gray-400">Heat {summary_stats.best_jump_score.heat}</p>
-              {summary_stats.best_jump_score.opponents && summary_stats.best_jump_score.opponents.length > 0 && (
+              <p className="text-xs text-gray-400">{summary_stats.best_jump_score.round_name}</p>
+              {summary_stats.best_jump_score.opponents && Array.isArray(summary_stats.best_jump_score.opponents) && summary_stats.best_jump_score.opponents.length > 0 && (
                 <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_jump_score.opponents.join(', ')}</p>
               )}
               <p className="text-xs text-cyan-400 mt-1">{summary_stats.best_jump_score.move}</p>
@@ -77,8 +77,8 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
               <p className="text-5xl font-bold text-white mb-2">
                 {summary_stats.best_wave_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
               </p>
-              <p className="text-xs text-gray-400">Heat {summary_stats.best_wave_score.heat}</p>
-              {summary_stats.best_wave_score.opponents && summary_stats.best_wave_score.opponents.length > 0 && (
+              <p className="text-xs text-gray-400">{summary_stats.best_wave_score.round_name}</p>
+              {summary_stats.best_wave_score.opponents && Array.isArray(summary_stats.best_wave_score.opponents) && summary_stats.best_wave_score.opponents.length > 0 && (
                 <p className="text-xs text-gray-500 mt-1">v {summary_stats.best_wave_score.opponents.join(', ')}</p>
               )}
             </>
@@ -97,11 +97,11 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
 
         {/* Heat Scores */}
         <FeatureCard title="Heat Scores" isLoading={false}>
-          <AthleteHeatScoresChart data={heat_scores.map(h => ({
-            heatNumber: parseInt(h.heat_number),
+          <AthleteHeatScoresChart data={heat_scores?.map(h => ({
+            roundName: h.round_name,
             score: h.score,
             type: h.elimination_type
-          }))} />
+          })) || []} />
         </FeatureCard>
       </div>
 
@@ -114,7 +114,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
               <thead>
                 <tr className="border-b border-slate-700/50">
                   <th className="text-left py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                    Heat No
+                    Round
                   </th>
                   <th className="text-left py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">
                     Move
@@ -128,12 +128,12 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                 </tr>
               </thead>
               <tbody>
-                {jump_scores.map((score, index) => (
+                {jump_scores?.map((score, index) => (
                   <tr
                     key={index}
                     className="border-b border-slate-700/30 hover:bg-slate-700/30 transition-colors"
                   >
-                    <td className="py-3 px-2 text-gray-300">{score.heat_number}</td>
+                    <td className="py-3 px-2 text-gray-300">{score.round_name}</td>
                     <td className="py-3 px-2 text-gray-300">{score.move}</td>
                     <td className="py-3 px-2 text-right font-semibold text-white">
                       {score.score.toFixed(2)} pts
@@ -163,7 +163,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
               <thead>
                 <tr className="border-b border-slate-700/50">
                   <th className="text-left py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                    Heat No
+                    Round
                   </th>
                   <th className="text-right py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">
                     Best Wave Score
@@ -177,12 +177,12 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                 </tr>
               </thead>
               <tbody>
-                {wave_scores.map((score, index) => (
+                {wave_scores?.map((score, index) => (
                   <tr
                     key={index}
                     className="border-b border-slate-700/30 hover:bg-slate-700/30 transition-colors"
                   >
-                    <td className="py-3 px-2 text-gray-300">{score.heat_number}</td>
+                    <td className="py-3 px-2 text-gray-300">{score.round_name}</td>
                     <td className="py-3 px-2 text-right font-semibold text-white">
                       {score.score.toFixed(2)} pts
                     </td>

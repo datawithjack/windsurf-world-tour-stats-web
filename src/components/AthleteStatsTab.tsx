@@ -48,8 +48,8 @@ const AthleteStatsTab = ({ eventId, selectedAthleteId, sex }: AthleteStatsTabPro
     );
   }
 
-  // No athlete selected
-  if (!selectedAthleteId || !athleteStats) {
+  // No athlete selected or incomplete data
+  if (!selectedAthleteId || !athleteStats || !athleteStats.profile) {
     return (
       <div className="text-center py-12">
         <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-12">
@@ -69,7 +69,7 @@ const AthleteStatsTab = ({ eventId, selectedAthleteId, sex }: AthleteStatsTabPro
         <div className="flex items-start gap-6">
           {/* Profile Photo */}
           <div className="flex-shrink-0">
-            {athleteStats.profile.profile_image ? (
+            {athleteStats.profile?.profile_image ? (
               <img
                 src={athleteStats.profile.profile_image}
                 alt={athleteStats.profile.name}
@@ -84,17 +84,17 @@ const AthleteStatsTab = ({ eventId, selectedAthleteId, sex }: AthleteStatsTabPro
 
           {/* Profile Info */}
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-bold text-white mb-1">{athleteStats.profile.name}</h2>
-            <p className="text-sm text-gray-300 mb-4">{athleteStats.profile.country}</p>
+            <h2 className="text-2xl font-bold text-white mb-1">{athleteStats.profile?.name}</h2>
+            <p className="text-sm text-gray-300 mb-4">{athleteStats.profile?.country}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {athleteStats.profile.sponsors && (
+              {athleteStats.profile?.sponsors && (
                 <div>
                   <span className="text-xs text-gray-400 uppercase tracking-wide">Sponsors:</span>
                   <p className="text-sm text-gray-300">{athleteStats.profile.sponsors}</p>
                 </div>
               )}
-              {athleteStats.profile.sail_number && (
+              {athleteStats.profile?.sail_number && (
                 <div>
                   <span className="text-xs text-gray-400 uppercase tracking-wide">Sail No:</span>
                   <p className="text-sm text-gray-300">{athleteStats.profile.sail_number}</p>
@@ -107,7 +107,7 @@ const AthleteStatsTab = ({ eventId, selectedAthleteId, sex }: AthleteStatsTabPro
           <div className="absolute top-6 right-6 text-right">
             <div className="bg-gradient-to-br from-teal-600/20 to-cyan-600/20 backdrop-blur-sm border border-teal-500/50 rounded-lg px-6 py-4 min-w-[120px]">
               <div className="flex items-center justify-center gap-2 mb-1">
-                {athleteStats.summary_stats.overall_position <= 3 && (
+                {athleteStats.summary_stats?.overall_position <= 3 && (
                   <Trophy
                     className={`${
                       athleteStats.summary_stats.overall_position === 1 ? 'text-yellow-400' :
@@ -120,10 +120,10 @@ const AthleteStatsTab = ({ eventId, selectedAthleteId, sex }: AthleteStatsTabPro
                 <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Position</span>
               </div>
               <p className="text-4xl font-bold text-white">
-                {athleteStats.summary_stats.overall_position === 1 ? '1st' :
-                 athleteStats.summary_stats.overall_position === 2 ? '2nd' :
-                 athleteStats.summary_stats.overall_position === 3 ? '3rd' :
-                 `${athleteStats.summary_stats.overall_position}th`}
+                {athleteStats.summary_stats?.overall_position === 1 ? '1st' :
+                 athleteStats.summary_stats?.overall_position === 2 ? '2nd' :
+                 athleteStats.summary_stats?.overall_position === 3 ? '3rd' :
+                 `${athleteStats.summary_stats?.overall_position}th`}
               </p>
             </div>
           </div>

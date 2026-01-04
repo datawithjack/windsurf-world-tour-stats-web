@@ -1,11 +1,25 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
-import type { HeatScore } from '../data/athleteStatsDummy';
+
+interface HeatScoreData {
+  roundName: string;
+  score: number;
+  type: 'Single' | 'Double';
+}
 
 interface AthleteHeatScoresChartProps {
-  data: HeatScore[];
+  data: HeatScoreData[];
 }
 
 const AthleteHeatScoresChart = ({ data }: AthleteHeatScoresChartProps) => {
+  // Handle empty or invalid data
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-[300px] text-gray-500">
+        No heat score data available
+      </div>
+    );
+  }
+
   // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -13,7 +27,7 @@ const AthleteHeatScoresChart = ({ data }: AthleteHeatScoresChartProps) => {
       return (
         <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg p-3 shadow-xl">
           <p className="text-sm font-semibold text-white mb-1">
-            Heat {data.heatNumber}
+            {data.roundName}
             {data.type && <span className="text-gray-400 ml-2">({data.type})</span>}
           </p>
           <p className="text-lg font-bold text-teal-400">{data.score.toFixed(2)} pts</p>
@@ -26,6 +40,8 @@ const AthleteHeatScoresChart = ({ data }: AthleteHeatScoresChartProps) => {
   // Custom label renderer
   const renderCustomLabel = (props: any) => {
     const { x, y, width, value } = props;
+    if (!value && value !== 0) return null;
+
     return (
       <text
         x={x + width / 2}
@@ -61,10 +77,9 @@ const AthleteHeatScoresChart = ({ data }: AthleteHeatScoresChartProps) => {
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
           <XAxis
-            dataKey="heatNumber"
+            dataKey="roundName"
             stroke="#94a3b8"
             fontSize={12}
-            label={{ value: 'Heat No.', position: 'insideBottom', offset: -10, fill: '#94a3b8' }}
           />
           <YAxis
             stroke="#94a3b8"
