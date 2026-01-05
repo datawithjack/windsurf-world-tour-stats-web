@@ -7,12 +7,12 @@ import { useState, useMemo } from 'react';
 
 const EventsPage = () => {
   const [yearFilter, setYearFilter] = useState<string>('all');
-  const [eventTypeFilter, setEventTypeFilter] = useState<string>('wave');
+  const [eventTypeFilter, setEventTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   const { data: eventsData, isLoading, error } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => apiService.getEvents(1, 50, true),
+    queryKey: ['events', eventTypeFilter],
+    queryFn: () => apiService.getEvents(1, 50, eventTypeFilter === 'wave'),
     retry: 1,
   });
 
@@ -35,9 +35,11 @@ const EventsPage = () => {
     return sortedEvents.filter(event => {
       const eventYear = new Date(event.start_date).getFullYear();
       const matchesYear = yearFilter === 'all' || eventYear === parseInt(yearFilter);
-      // For now, eventTypeFilter is always 'wave' since we only have wave events
-      // In future, add event type field to events and filter by it
-      const matchesType = true; // eventTypeFilter === 'wave'
+
+      const matchesType =
+        eventTypeFilter === 'all' ||
+        (eventTypeFilter === 'wave' && event.has_wave_discipline) ||
+        (eventTypeFilter === 'non-wave' && !event.has_wave_discipline);
 
       const matchesStatus =
         statusFilter === 'all' ||
@@ -123,7 +125,9 @@ const EventsPage = () => {
                 aria-label="Filter events by type"
                 className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
               >
+                <option value="all">All Events</option>
                 <option value="wave">Wave</option>
+                <option value="non-wave">Non-Wave</option>
               </select>
             </div>
           </div>
