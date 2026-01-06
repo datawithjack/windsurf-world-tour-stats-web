@@ -7,12 +7,14 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
+  Scatter,
 } from 'recharts';
 
 interface MoveTypeData {
   type: string;
   best: number;
   average: number;
+  fleetAverage: number;
   bestBy: {
     athlete: string;
     heat: string;
@@ -52,11 +54,33 @@ const CustomTooltip = (props: any) => {
             {payload[0].name}: {payload[0].value?.toFixed(2)} pts
           </p>
         )}
+        <p className="text-sm text-slate-400 mt-2 pt-2 border-t border-slate-700/50">
+          Fleet Avg: {data.fleetAverage.toFixed(2)} pts
+        </p>
       </div>
     );
   }
 
   return null;
+};
+
+// Custom shape for fleet average vertical line
+const FleetAverageLine = (props: any) => {
+  const { cx, cy } = props;
+  const lineHeight = 50; // Height of the line
+
+  return (
+    <line
+      x1={cx}
+      y1={cy - lineHeight / 2}
+      x2={cx}
+      y2={cy + lineHeight / 2}
+      stroke="#94a3b8"
+      strokeWidth={2.5}
+      strokeDasharray="6 4"
+      opacity={0.9}
+    />
+  );
 };
 
 const EventStatsChart = ({ data }: EventStatsChartProps) => {
@@ -71,6 +95,10 @@ const EventStatsChart = ({ data }: EventStatsChartProps) => {
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-slate-600"></div>
           <span className="text-gray-400">Average Score</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-0.5" style={{ backgroundImage: 'repeating-linear-gradient(to right, #94a3b8 0, #94a3b8 6px, transparent 6px, transparent 10px)', opacity: 0.9 }}></div>
+          <span className="text-gray-400">Fleet Average</span>
         </div>
       </div>
 
@@ -125,6 +153,12 @@ const EventStatsChart = ({ data }: EventStatsChartProps) => {
               formatter={(value: any) => typeof value === 'number' ? value.toFixed(2) : value}
             />
           </Bar>
+          <Scatter
+            dataKey="fleetAverage"
+            name="Fleet Average"
+            fill="none"
+            shape={<FleetAverageLine />}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

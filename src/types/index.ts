@@ -124,6 +124,7 @@ export interface MoveTypeStat {
   move_type: string;
   best_score: number;
   average_score: number;
+  fleet_average: number;
   best_scored_by: {
     athlete_name: string;
     athlete_id: string;
@@ -233,6 +234,7 @@ export interface MoveTypeScore {
   move_type: string;
   best_score: number;
   average_score: number;
+  fleet_average: number;
 }
 
 export interface HeatScore {

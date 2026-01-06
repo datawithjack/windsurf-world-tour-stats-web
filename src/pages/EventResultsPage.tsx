@@ -95,6 +95,7 @@ const EventResultsPage = () => {
       type: stat.move_type,
       best: stat.best_score,
       average: stat.average_score,
+      fleetAverage: stat.fleet_average,
       bestBy: stat.best_scored_by ? {
         athlete: stat.best_scored_by.athlete_name,
         heat: stat.best_scored_by.heat_number.toString(),

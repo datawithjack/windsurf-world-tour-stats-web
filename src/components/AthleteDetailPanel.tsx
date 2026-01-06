@@ -15,6 +15,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
     type: score.move_type,
     best: score.best_score,
     average: score.average_score,
+    fleetAverage: score.fleet_average,
     bestBy: {
       athlete: data.profile?.name || '',
       heat: '',
