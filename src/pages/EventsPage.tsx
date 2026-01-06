@@ -7,8 +7,8 @@ import { useState, useMemo } from 'react';
 
 const EventsPage = () => {
   const [yearFilter, setYearFilter] = useState<string>('all');
-  const [eventTypeFilter, setEventTypeFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [eventTypeFilter, setEventTypeFilter] = useState<string>('wave');
+  const [statusFilter, setStatusFilter] = useState<string>('completed');
 
   const { data: eventsData, isLoading, error } = useQuery({
     queryKey: ['events', eventTypeFilter],
