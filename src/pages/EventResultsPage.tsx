@@ -239,47 +239,45 @@ const EventResultsPage = () => {
         </div>
       </section>
 
-      {/* Filters Section - hide on Head to Head tab */}
-      {activeTab !== 'head-to-head' && (
-        <section className="px-4 sm:px-6 lg:px-8 py-4 pb-2">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-3 flex-wrap">
-              <select
-                value={genderFilter}
-                onChange={(e) => setGenderFilter(e.target.value as 'all' | 'men' | 'women')}
-                aria-label="Filter by gender"
-                className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
-              >
-                <option value="men">Men</option>
-                <option value="women">Women</option>
-              </select>
+      {/* Filters Section */}
+      <section className="px-4 sm:px-6 lg:px-8 py-4 pb-2">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-3 flex-wrap">
+            <select
+              value={genderFilter}
+              onChange={(e) => setGenderFilter(e.target.value as 'all' | 'men' | 'women')}
+              aria-label="Filter by gender"
+              className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+            >
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+            </select>
 
-              {/* Athlete Filter - only show on Athlete Stats tab */}
-              {activeTab === 'athlete-stats' && (
-                <select
-                  value={selectedAthleteId || ''}
-                  onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
-                  aria-label="Select athlete"
-                  className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
-                  disabled={athleteListLoading || !athleteListData?.athletes.length}
-                >
-                  {athleteListLoading ? (
-                    <option>Loading athletes...</option>
-                  ) : athleteListData?.athletes && athleteListData.athletes.length > 0 ? (
-                    athleteListData.athletes.map((athlete) => (
-                      <option key={athlete.athlete_id} value={athlete.athlete_id}>
-                        {athlete.overall_position}. {athlete.name} ({athlete.country_code})
-                      </option>
-                    ))
-                  ) : (
-                    <option>No athletes found</option>
-                  )}
-                </select>
-              )}
-            </div>
+            {/* Athlete Filter - only show on Athlete Stats tab */}
+            {activeTab === 'athlete-stats' && (
+              <select
+                value={selectedAthleteId || ''}
+                onChange={(e) => setSelectedAthleteId(Number(e.target.value))}
+                aria-label="Select athlete"
+                className="bg-slate-800/60 border border-slate-700/50 text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm"
+                disabled={athleteListLoading || !athleteListData?.athletes.length}
+              >
+                {athleteListLoading ? (
+                  <option>Loading athletes...</option>
+                ) : athleteListData?.athletes && athleteListData.athletes.length > 0 ? (
+                  athleteListData.athletes.map((athlete) => (
+                    <option key={athlete.athlete_id} value={athlete.athlete_id}>
+                      {athlete.overall_position}. {athlete.name} ({athlete.country_code})
+                    </option>
+                  ))
+                ) : (
+                  <option>No athletes found</option>
+                )}
+              </select>
+            )}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Tab Content */}
       <section className="px-4 sm:px-6 lg:px-8 py-6 pb-20">
@@ -444,7 +442,10 @@ const EventResultsPage = () => {
               sex={genderFilter === 'men' ? 'Men' : 'Women'}
             />
           ) : (
-            <HeadToHeadComparison />
+            <HeadToHeadComparison
+              eventId={event?.id || 0}
+              gender={genderFilter === 'men' ? 'Men' : 'Women'}
+            />
           )}
         </div>
       </section>

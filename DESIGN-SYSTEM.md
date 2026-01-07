@@ -97,12 +97,157 @@ Always include accessibility labels even when hiding visual labels:
 
 ---
 
+### Remove Until You Can't Remove Anymore
+
+The interface should contain only essential elements. Every visual component, border, label, or decoration must justify its existence through function, not tradition.
+
+**Core Philosophy:**
+- Start with the minimum viable design
+- Add elements only when they solve a specific problem
+- Question every border, box, label, and decoration
+- Trust that simplicity creates clarity
+
+#### Examples
+
+**✅ DO - Minimal essential design:**
+```jsx
+// Head-to-Head athlete cards - Image borders and colored names
+<div className="flex flex-col items-center gap-3">
+  <img
+    src={athlete.image}
+    alt={athlete.name}
+    className="w-28 h-28 rounded-lg border-4 border-cyan-400"
+  />
+  <h3 className="text-xl font-bold text-cyan-400">{athlete.name}</h3>
+  <p className="text-sm text-gray-400">{athlete.nationality}</p>
+</div>
+```
+
+**❌ DON'T - Over-designed with redundant elements:**
+```jsx
+// Unnecessary boxes, accent bars, and explicit labels
+<div className="bg-slate-800/40 border-2 border-cyan-400/50 rounded-lg p-6 relative">
+  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-cyan-400"></div>
+  <div className="flex flex-col items-center gap-3">
+    <div className="px-3 py-1 bg-cyan-400/20 border border-cyan-400/50 rounded-full">
+      <span className="text-xs font-bold text-cyan-400">CYAN</span>
+    </div>
+    <img
+      src={athlete.image}
+      className="w-24 h-24 rounded-lg border-2 border-cyan-400/50 ring-2 ring-cyan-400/20"
+    />
+    <h3 className="text-lg font-bold text-white">{athlete.name}</h3>
+    <p className="text-sm text-gray-400">{athlete.nationality}</p>
+  </div>
+</div>
+```
+
+#### When to Apply
+
+**Remove elements when:**
+- They duplicate information already conveyed visually
+- They're decorative without functional purpose
+- A thicker border achieves the same as a full container
+- Color alone can establish identity (no need for "Cyan" label)
+- Users can infer the information from context
+
+**Keep elements when:**
+- They provide unique, essential information
+- They establish critical visual hierarchy
+- Removing them creates ambiguity or confusion
+- They serve accessibility purposes
+- They're the simplest solution to the problem
+
+#### Real-World Application
+
+**Head-to-Head Comparison:**
+- **Before:** Large card boxes around athletes, accent bars, "Cyan"/"Green" text labels, multiple borders
+- **After:** Thick colored borders (4px) on images, names colored cyan/teal, no container boxes
+- **Rationale:** Border color + name color establishes identity without boxes or labels
+- **Result:** Cleaner, more focused on the athletes themselves
+
+**Stat Comparison Bars:**
+- **Before:** Bars with full name labels underneath
+- **After:** Surname on bar, value on right, no redundant label
+- **Rationale:** Name appears on bar, no need to repeat it below
+
+#### The Removal Process
+
+When designing UI, follow this sequence:
+
+1. **Build the minimum** - Start with only essential information
+2. **Test for clarity** - Can users understand it?
+3. **Add only if needed** - If confusion exists, add the smallest solution
+4. **Remove the addition** - After adding, try removing it again
+5. **Repeat** - Keep questioning every element
+
+#### Implementation Checklist
+
+When reviewing designs:
+- [ ] Can this box be removed? (Use borders/spacing instead)
+- [ ] Can this label be removed? (Is it visually obvious?)
+- [ ] Can this decoration be removed? (Does it serve function?)
+- [ ] Can this border be simplified? (Single border vs multiple layers)
+- [ ] Can color replace explicit labeling? (Cyan name vs "Cyan" badge)
+- [ ] Can thickness replace complexity? (4px border vs border + ring + background)
+- [ ] Does every element justify its pixels?
+
+#### Balancing Minimalism and Clarity
+
+**Minimalism doesn't mean:**
+- Removing essential information
+- Creating confusion through oversimplification
+- Sacrificing usability for aesthetics
+- Hiding important context
+
+**Minimalism does mean:**
+- Every element has a clear purpose
+- Visual noise is eliminated
+- Users focus on content, not chrome
+- Simple solutions are preferred over complex ones
+
+#### Accessibility Considerations
+
+Minimalism in visual design should never compromise accessibility:
+
+```jsx
+// Visual minimalism with accessibility maintained
+<img
+  src={athlete.image}
+  alt={`${athlete.name} - Cyan team`}
+  className="w-28 h-28 rounded-lg border-4 border-cyan-400"
+  aria-label={`${athlete.name}, ${athlete.nationality}, representing Cyan team`}
+/>
+```
+
+**Remember:** Remove visual redundancy, not semantic information. Screen readers still need full context.
+
+#### Design Philosophy
+
+> "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away." - Antoine de Saint-Exupéry
+
+Applied to UI design:
+- Every pixel should earn its place
+- Simplicity creates focus
+- Clarity through reduction, not addition
+- Trust users to understand simple, well-designed interfaces
+
+---
+
 ## 🎨 Brand Colors
 
 ### Primary Palette
 - **Background**: `#0A0E1A` - Deep navy/black
-- **Accent**: `#38bdf8` (cyan-400) - Bright cyan for highlights
+- **Accent Primary**: `#38bdf8` (cyan-400) - Bright cyan for highlights and primary athlete
+- **Accent Secondary**: `#2dd4bf` (teal-400) - Teal for secondary athlete comparisons
 - **Accent Bright**: `#0ea5e9` (cyan-500) - Brighter cyan for active states
+
+### Comparison Colors
+For head-to-head athlete comparisons, use:
+- **Athlete 1**: Cyan (`#38bdf8`, cyan-400)
+- **Athlete 2**: Teal (`#2dd4bf`, teal-400)
+
+These colors work harmoniously together as both are cool, blue-based tones, creating visual cohesion while maintaining clear distinction.
 
 ### Ocean Color Scale
 ```css

@@ -76,6 +76,47 @@ export interface HeadToHead {
   lastMeeting?: string;
 }
 
+// Event Head-to-Head Types
+export interface EventHeadToHeadAthlete {
+  athlete_id: number;
+  name: string;
+  nationality: string;
+  place: number;
+  profile_image: string | null;
+  heat_scores_best: number;
+  heat_scores_avg: number;
+  jumps_best: number;
+  jumps_avg_counting: number;
+  waves_best: number;
+  waves_avg_counting: number;
+  heat_wins: number;
+}
+
+export interface EventHeadToHeadComparison {
+  winner: 'athlete1' | 'athlete2' | 'tie';
+  difference: number;
+  athlete1_value: number;
+  athlete2_value: number;
+}
+
+export interface EventHeadToHeadResponse {
+  event_id: number;
+  event_name: string;
+  division: string;
+  athlete1: EventHeadToHeadAthlete;
+  athlete2: EventHeadToHeadAthlete;
+  comparison: {
+    heat_scores_best: EventHeadToHeadComparison;
+    heat_scores_avg: EventHeadToHeadComparison;
+    jumps_best: EventHeadToHeadComparison;
+    jumps_avg_counting: EventHeadToHeadComparison;
+    waves_best: EventHeadToHeadComparison;
+    waves_avg_counting: EventHeadToHeadComparison;
+    heat_wins: EventHeadToHeadComparison;
+  };
+  generated_at: string;
+}
+
 export interface AthleteResult {
   id: number;
   athlete_id: number;
