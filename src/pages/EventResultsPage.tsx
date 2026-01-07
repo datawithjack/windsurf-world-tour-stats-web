@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Star, User } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import FeatureCard from '../components/FeatureCard';
@@ -17,6 +17,10 @@ const EventResultsPage = () => {
   const [genderFilter, setGenderFilter] = useState<'all' | 'men' | 'women'>('women');
   const [selectedAthleteId, setSelectedAthleteId] = useState<number | null>(null);
   const [defaultSet, setDefaultSet] = useState(false);
+
+  // Refs for tab navigation scrolling
+  const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
+  const tabContainerRef = useRef<HTMLDivElement | null>(null);
 
   const { data: event, isLoading, error } = useQuery({
     queryKey: ['event', id],
@@ -83,6 +87,19 @@ const EventResultsPage = () => {
       setSelectedAthleteId(athleteListData.athletes[0].athlete_id);
     }
   }, [athleteListData, selectedAthleteId]);
+
+  // Auto-scroll active tab into view on mobile
+  useEffect(() => {
+    const activeTabElement = tabRefs.current[activeTab];
+    if (activeTabElement && tabContainerRef.current) {
+      // Scroll the active tab into view, centered
+      activeTabElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    }
+  }, [activeTab]);
 
   // Transform API response to component props format
   const transformedStatsData = statsData ? {
@@ -194,8 +211,9 @@ const EventResultsPage = () => {
       {/* Tab Navigation */}
       <section className="px-4 sm:px-6 lg:px-8 py-4 border-b border-slate-700/50">
         <div className="max-w-7xl mx-auto">
-          <div className="flex gap-1 overflow-x-auto scrollbar-hide">
+          <div ref={tabContainerRef} className="flex gap-1 overflow-x-auto scrollbar-hide">
             <button
+              ref={(el) => (tabRefs.current['results'] = el)}
               onClick={() => setActiveTab('results')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeTab === 'results'
@@ -206,6 +224,7 @@ const EventResultsPage = () => {
               Results
             </button>
             <button
+              ref={(el) => (tabRefs.current['event-stats'] = el)}
               onClick={() => setActiveTab('event-stats')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeTab === 'event-stats'
@@ -216,6 +235,7 @@ const EventResultsPage = () => {
               Event Stats
             </button>
             <button
+              ref={(el) => (tabRefs.current['athlete-stats'] = el)}
               onClick={() => setActiveTab('athlete-stats')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeTab === 'athlete-stats'
@@ -226,6 +246,7 @@ const EventResultsPage = () => {
               Athlete Stats
             </button>
             <button
+              ref={(el) => (tabRefs.current['head-to-head'] = el)}
               onClick={() => setActiveTab('head-to-head')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeTab === 'head-to-head'
