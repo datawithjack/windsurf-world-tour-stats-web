@@ -57,7 +57,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
           <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Heat Score
           </h3>
-          {summary_stats.best_heat_score ? (
+          {summary_stats.best_heat_score && summary_stats.best_heat_score.score != null ? (
             <>
               <p className="text-5xl font-bold text-white mb-2">
                 {summary_stats.best_heat_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
@@ -77,7 +77,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
           <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Jump Score
           </h3>
-          {summary_stats.best_jump_score ? (
+          {summary_stats.best_jump_score && summary_stats.best_jump_score.score != null ? (
             <>
               <p className="text-5xl font-bold text-white mb-2">
                 {summary_stats.best_jump_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
@@ -98,7 +98,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
           <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             Best Wave Score
           </h3>
-          {summary_stats.best_wave_score ? (
+          {summary_stats.best_wave_score && summary_stats.best_wave_score.score != null ? (
             <>
               <p className="text-5xl font-bold text-white mb-2">
                 {summary_stats.best_wave_score.score.toFixed(2)} <span className="text-2xl text-gray-400">pts</span>
@@ -162,7 +162,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                     <td className="py-3 px-2 text-gray-300">{score.round_name}</td>
                     <td className="py-3 px-2 text-gray-300">{score.move}</td>
                     <td className="py-3 px-2 text-right font-semibold text-white">
-                      {score.score.toFixed(2)} pts
+                      {score.score != null ? score.score.toFixed(2) : '0.00'} pts
                     </td>
                     <td className="py-3 px-2 text-center">
                       <span
@@ -207,7 +207,7 @@ const AthleteDetailPanel = ({ data }: AthleteDetailPanelProps) => {
                   >
                     <td className="py-3 px-2 text-gray-300">{score.round_name}</td>
                     <td className="py-3 px-2 text-right font-semibold text-white">
-                      {score.score.toFixed(2)} pts
+                      {score.score != null ? score.score.toFixed(2) : '0.00'} pts
                     </td>
                     <td className="py-3 px-2 text-center">
                       <span
