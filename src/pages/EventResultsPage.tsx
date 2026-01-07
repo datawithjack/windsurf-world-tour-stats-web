@@ -25,21 +25,15 @@ const EventResultsPage = () => {
     retry: 1,
   });
 
-  // Debug logging for event IDs
-  console.log('🆔 EventResultsPage - URL param id:', id);
-  console.log('📋 EventResultsPage - Event object:', event);
-  console.log('🔑 EventResultsPage - event.id:', event?.id);
-  console.log('🎯 EventResultsPage - event.event_id:', event?.event_id);
-
   // Fetch athlete results with gender filter
   const { data: resultsData, isLoading: resultsLoading } = useQuery({
-    queryKey: ['athleteResults', event?.event_id, genderFilter],
+    queryKey: ['athleteResults', event?.id, genderFilter],
     queryFn: () => apiService.getAthleteResults({
-      event_id: event?.event_id,
+      event_id: event?.id,
       sex: genderFilter === 'all' ? undefined : genderFilter === 'men' ? 'Men' : 'Women',
       page_size: 100,
     }),
-    enabled: !!event?.event_id,
+    enabled: !!event?.id,
     retry: 1,
   });
 
@@ -56,18 +50,18 @@ const EventResultsPage = () => {
 
   // Fetch athlete list for event
   const { data: athleteListData, isLoading: athleteListLoading } = useQuery({
-    queryKey: ['eventAthletes', event?.event_id, genderFilter],
+    queryKey: ['eventAthletes', event?.id, genderFilter],
     queryFn: () => apiService.getEventAthletes(
-      event!.event_id,
+      event!.id,
       genderFilter === 'men' ? 'Men' : 'Women'
     ),
-    enabled: !!event?.event_id && genderFilter !== 'all' && activeTab === 'athlete-stats',
+    enabled: !!event?.id && genderFilter !== 'all' && activeTab === 'athlete-stats',
     retry: 1,
   });
 
   // Set default gender filter and selected athlete based on available results
   useEffect(() => {
-    if (!defaultSet && resultsData?.results !== undefined && event?.event_id) {
+    if (!defaultSet && resultsData?.results !== undefined && event?.id) {
       // If no results for women, check if men's results exist
       if (resultsData.results.length === 0 && genderFilter === 'women') {
         // Try to fetch men's results to see if we should switch default
@@ -75,7 +69,7 @@ const EventResultsPage = () => {
       }
       setDefaultSet(true);
     }
-  }, [resultsData, event?.event_id, defaultSet, genderFilter]);
+  }, [resultsData, event?.id, defaultSet, genderFilter]);
 
   // Reset selected athlete when gender filter or tab changes
   useEffect(() => {
@@ -443,13 +437,13 @@ const EventResultsPage = () => {
             </div>
           ) : activeTab === 'athlete-stats' ? (
             <AthleteStatsTab
-              eventId={event?.event_id || 0}
+              eventId={event?.id || 0}
               selectedAthleteId={selectedAthleteId}
               sex={genderFilter === 'men' ? 'Men' : 'Women'}
             />
           ) : (
             <HeadToHeadComparison
-              eventId={event?.event_id || 0}
+              eventId={event?.id || 0}
               gender={genderFilter === 'men' ? 'Men' : 'Women'}
             />
           )}
