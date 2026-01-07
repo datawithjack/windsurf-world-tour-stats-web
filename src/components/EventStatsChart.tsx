@@ -40,7 +40,7 @@ const CustomTooltip = (props: any) => {
         {isBest && data.bestBy !== null ? (
           <>
             <p className="text-sm text-teal-400 mb-1">
-              Best: {data.best.toFixed(2)} pts
+              Best: {data.best != null ? data.best.toFixed(2) : '0.00'} pts
             </p>
             <p className="text-xs text-gray-400">
               {data.bestBy.athlete}
@@ -51,11 +51,11 @@ const CustomTooltip = (props: any) => {
           </>
         ) : (
           <p className="text-sm text-gray-400">
-            {payload[0].name}: {payload[0].value?.toFixed(2)} pts
+            {payload[0].name}: {payload[0].value != null ? payload[0].value.toFixed(2) : '0.00'} pts
           </p>
         )}
         <p className="text-sm text-slate-400 mt-2 pt-2 border-t border-slate-700/50">
-          Fleet Avg: {data.fleetAverage.toFixed(2)} pts
+          Fleet Avg: {data.fleetAverage != null ? data.fleetAverage.toFixed(2) : '0.00'} pts
         </p>
       </div>
     );

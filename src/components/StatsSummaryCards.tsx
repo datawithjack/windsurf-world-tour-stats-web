@@ -64,7 +64,7 @@ const FlipCard = ({ title, scoreData, type }: FlipCardProps) => {
           <h3 className="text-base font-medium text-white mb-2" style={{ fontFamily: 'var(--font-inter)' }}>
             {title}
           </h3>
-          <p className="text-4xl font-bold text-white mb-2">{scoreData.score.toFixed(2)} pts</p>
+          <p className="text-4xl font-bold text-white mb-2">{scoreData.score != null ? scoreData.score.toFixed(2) : '0.00'} pts</p>
           <p className="text-xs text-gray-400">
             {scoreData.has_multiple_tied ? (
               <span className="text-cyan-400 font-semibold">Multiple (Click to see)</span>
@@ -108,7 +108,7 @@ const FlipCard = ({ title, scoreData, type }: FlipCardProps) => {
                     {type === 'jump' && tied.move_type && (
                       <p className="text-xs text-gray-400">{tied.move_type}</p>
                     )}
-                    <p className="text-xs text-cyan-400 font-semibold mt-1">{tied.score.toFixed(2)} pts</p>
+                    <p className="text-xs text-cyan-400 font-semibold mt-1">{tied.score != null ? tied.score.toFixed(2) : '0.00'} pts</p>
                   </div>
                 ))}
               </div>
