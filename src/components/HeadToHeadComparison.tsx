@@ -15,12 +15,19 @@ const HeadToHeadComparison: React.FC<HeadToHeadComparisonProps> = ({ eventId, ge
   const [athlete2Id, setAthlete2Id] = useState<number | null>(null);
 
   // Fetch athlete list for event
-  const { data: athleteListData, isLoading: athleteListLoading } = useQuery({
+  const { data: athleteListData, isLoading: athleteListLoading, error: athleteListError } = useQuery({
     queryKey: ['eventAthletes', eventId, gender],
-    queryFn: () => apiService.getEventAthletes(eventId, gender),
+    queryFn: () => {
+      console.log('🔍 HeadToHead - Fetching athletes for event:', eventId, 'gender:', gender);
+      return apiService.getEventAthletes(eventId, gender);
+    },
     enabled: !!eventId,
     retry: 1,
   });
+
+  console.log('👥 HeadToHead - Athlete list data:', athleteListData);
+  console.log('❌ HeadToHead - Athlete list error:', athleteListError);
+  console.log('📊 HeadToHead - Athletes count:', athleteListData?.athletes?.length || 0);
 
   // Fetch head-to-head comparison
   const { data: headToHeadData, isLoading: headToHeadLoading } = useQuery({

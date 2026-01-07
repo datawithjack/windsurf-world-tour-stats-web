@@ -25,6 +25,12 @@ const EventResultsPage = () => {
     retry: 1,
   });
 
+  // Debug logging for event IDs
+  console.log('🆔 EventResultsPage - URL param id:', id);
+  console.log('📋 EventResultsPage - Event object:', event);
+  console.log('🔑 EventResultsPage - event.id:', event?.id);
+  console.log('🎯 EventResultsPage - event.event_id:', event?.event_id);
+
   // Fetch athlete results with gender filter
   const { data: resultsData, isLoading: resultsLoading } = useQuery({
     queryKey: ['athleteResults', event?.event_id, genderFilter],
