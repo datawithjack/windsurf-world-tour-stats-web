@@ -48,14 +48,32 @@ const AthleteStatsTab = ({ eventId, selectedAthleteId, sex }: AthleteStatsTabPro
     );
   }
 
-  // No athlete selected or incomplete data
-  if (!selectedAthleteId || !athleteStats || !athleteStats.profile) {
+  // No athlete selected
+  if (!selectedAthleteId) {
     return (
       <div className="text-center py-12">
         <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-lg p-12">
           <h3 className="text-xl font-semibold text-gray-400 mb-2">No Athlete Selected</h3>
           <p className="text-gray-500">
             Please select an athlete from the dropdown above to view their statistics.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Incomplete data - show helpful error
+  if (!athleteStats || !athleteStats.profile) {
+    console.error('Incomplete athlete stats data:', { athleteStats, eventId, selectedAthleteId, sex });
+    return (
+      <div className="text-center py-12">
+        <div className="bg-yellow-500/10 border border-yellow-500/50 rounded-lg p-12">
+          <h3 className="text-xl font-semibold text-yellow-400 mb-2">No Data Available</h3>
+          <p className="text-gray-400">
+            Statistics are not available for this athlete at this event.
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            Event ID: {eventId}, Athlete ID: {selectedAthleteId}
           </p>
         </div>
       </div>

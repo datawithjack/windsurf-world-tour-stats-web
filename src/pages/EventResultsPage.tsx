@@ -50,12 +50,12 @@ const EventResultsPage = () => {
 
   // Fetch athlete list for event
   const { data: athleteListData, isLoading: athleteListLoading } = useQuery({
-    queryKey: ['eventAthletes', event?.id, genderFilter],
+    queryKey: ['eventAthletes', event?.event_id, genderFilter],
     queryFn: () => apiService.getEventAthletes(
-      event!.id,
+      event!.event_id,
       genderFilter === 'men' ? 'Men' : 'Women'
     ),
-    enabled: !!event?.id && genderFilter !== 'all' && activeTab === 'athlete-stats',
+    enabled: !!event?.event_id && genderFilter !== 'all' && activeTab === 'athlete-stats',
     retry: 1,
   });
 
@@ -437,13 +437,13 @@ const EventResultsPage = () => {
             </div>
           ) : activeTab === 'athlete-stats' ? (
             <AthleteStatsTab
-              eventId={event?.id || 0}
+              eventId={event?.event_id || 0}
               selectedAthleteId={selectedAthleteId}
               sex={genderFilter === 'men' ? 'Men' : 'Women'}
             />
           ) : (
             <HeadToHeadComparison
-              eventId={event?.id || 0}
+              eventId={event?.event_id || 0}
               gender={genderFilter === 'men' ? 'Men' : 'Women'}
             />
           )}
