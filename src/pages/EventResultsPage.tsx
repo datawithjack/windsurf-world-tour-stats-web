@@ -213,7 +213,7 @@ const EventResultsPage = () => {
         <div className="max-w-7xl mx-auto">
           <div ref={tabContainerRef} className="flex gap-1 overflow-x-auto scrollbar-hide">
             <button
-              ref={(el) => (tabRefs.current['results'] = el)}
+              ref={(el) => { tabRefs.current['results'] = el; }}
               onClick={() => setActiveTab('results')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeTab === 'results'
@@ -224,7 +224,7 @@ const EventResultsPage = () => {
               Results
             </button>
             <button
-              ref={(el) => (tabRefs.current['event-stats'] = el)}
+              ref={(el) => { tabRefs.current['event-stats'] = el; }}
               onClick={() => setActiveTab('event-stats')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeTab === 'event-stats'
@@ -235,7 +235,7 @@ const EventResultsPage = () => {
               Event Stats
             </button>
             <button
-              ref={(el) => (tabRefs.current['athlete-stats'] = el)}
+              ref={(el) => { tabRefs.current['athlete-stats'] = el; }}
               onClick={() => setActiveTab('athlete-stats')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeTab === 'athlete-stats'
@@ -246,7 +246,7 @@ const EventResultsPage = () => {
               Athlete Stats
             </button>
             <button
-              ref={(el) => (tabRefs.current['head-to-head'] = el)}
+              ref={(el) => { tabRefs.current['head-to-head'] = el; }}
               onClick={() => setActiveTab('head-to-head')}
               className={`px-6 py-3 font-semibold text-sm uppercase tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeTab === 'head-to-head'
